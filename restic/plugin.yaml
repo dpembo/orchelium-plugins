@@ -1,0 +1,101 @@
+name: restic
+version: 1.0.0
+label: Restic Backup
+description: |
+  Run a Restic backup, forget, or check operation against any supported
+  repository (local, SFTP, REST server, S3, B2, Azure, GCS, etc.).
+  Supports password file or environment-variable authentication.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - backup
+      - forget
+      - check
+      - snapshots
+      - restore
+    default: backup
+    description: |
+      backup — create a new snapshot.
+      forget — apply a retention policy and optionally prune.
+      check — verify repository integrity.
+      snapshots — list snapshots (output captured as JSON).
+      restore — restore a snapshot to a target directory.
+
+  - name: repo
+    label: Repository
+    type: string
+    required: true
+    placeholder: "/mnt/backup  or  sftp:user@host:/backup  or  s3:s3.amazonaws.com/bucket"
+    description: Restic repository path or URL.
+
+  - name: password_file
+    label: Password File
+    type: string
+    required: false
+    placeholder: "/etc/restic/password"
+    description: |
+      Path to a file containing the repository password on the agent.
+      Leave empty to use the RESTIC_PASSWORD environment variable instead.
+
+  - name: paths
+    label: Paths to Back Up
+    type: string
+    required: false
+    placeholder: "/home/dave/data /var/www"
+    description: |
+      Space-separated list of paths to include in the backup.
+      Required for the backup operation. Ignored for other operations.
+
+  - name: tags
+    label: Tags (optional)
+    type: string
+    required: false
+    placeholder: "daily web"
+    description: Space-separated list of tags to apply to the snapshot.
+
+  - name: exclude
+    label: Exclude Patterns (optional)
+    type: string
+    required: false
+    placeholder: "*.log /tmp"
+    description: Space-separated exclude patterns (passed as --exclude for each).
+
+  - name: forget_policy
+    label: Forget / Retention Policy
+    type: string
+    required: false
+    placeholder: "--keep-daily 7 --keep-weekly 4 --keep-monthly 12"
+    description: |
+      Restic forget flags. Only used when operation is forget.
+      Add --prune to also remove unreferenced data in the same step.
+
+  - name: snapshot_id
+    label: Snapshot ID (restore only)
+    type: string
+    required: false
+    placeholder: "latest"
+    default: "latest"
+    description: Snapshot ID or 'latest'. Only used for the restore operation.
+
+  - name: restore_target
+    label: Restore Target Directory
+    type: string
+    required: false
+    placeholder: "/tmp/restore"
+    description: Directory to restore files into. Only used for the restore operation.
+
+  - name: extra_flags
+    label: Extra Flags (optional)
+    type: string
+    required: false
+    placeholder: "--verbose --limit-upload 5000"
+    description: Any additional restic flags appended verbatim to the command.
+
+command: ./run.sh
+
+output:
+  format: auto

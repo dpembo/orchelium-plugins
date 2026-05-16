@@ -1,0 +1,114 @@
+name: mysql
+version: 1.0.0
+label: MySQL / MariaDB
+description: |
+  Backup, restore and manage MySQL / MariaDB databases.
+  Uses mysqldump for exports and mysql / mysqlcheck for other operations.
+  Passwords are passed via an options file so they never appear on the command line.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - dump
+      - restore
+      - query
+      - list-databases
+      - create-database
+      - drop-database
+      - check
+    default: dump
+    description: |
+      dump            — export a database to a SQL file (supports .gz compression).
+      restore         — import a SQL file into a database (supports .gz).
+      query           — execute an arbitrary SQL statement and print results.
+      list-databases  — list all databases on the server.
+      create-database — create a new database (IF NOT EXISTS).
+      drop-database   — drop an existing database (irreversible!).
+      check           — run mysqlcheck --auto-repair on a database.
+
+  - name: host
+    label: Host
+    type: string
+    required: false
+    default: "localhost"
+    placeholder: "localhost"
+    description: MySQL / MariaDB server hostname or IP address.
+
+  - name: port
+    label: Port
+    type: number
+    required: false
+    default: 3306
+    placeholder: "3306"
+    description: MySQL server port.
+
+  - name: user
+    label: Username
+    type: string
+    required: false
+    default: "root"
+    placeholder: "root"
+    description: MySQL username for the connection.
+
+  - name: password_file
+    label: Options / Password File
+    type: string
+    required: false
+    placeholder: "/etc/mysql/backup.cnf"
+    description: |
+      Path to a MySQL option file (my.cnf style) containing:
+        [client]
+        password=yourpassword
+      Passed via --defaults-extra-file so the password never appears on the command line.
+      Leave blank to rely on ~/.my.cnf or a password-free socket connection.
+
+  - name: database
+    label: Database
+    type: string
+    required: false
+    placeholder: "mydb"
+    description: |
+      Target database name.
+      Use "ALL" with the dump operation to dump every database (--all-databases).
+      Required for: dump, restore, query, create-database, drop-database, check.
+
+  - name: dump_file
+    label: Dump File Path
+    type: string
+    required: false
+    placeholder: "/backups/mydb_%Y-%m-%d.sql.gz"
+    description: |
+      Output file path for the dump operation.
+      Supports strftime placeholders (%Y, %m, %d, %H, %M, %S).
+      Append .gz to enable automatic gzip compression.
+
+  - name: restore_file
+    label: Restore File Path
+    type: string
+    required: false
+    placeholder: "/backups/mydb_2025-01-01.sql.gz"
+    description: Path to the SQL dump file to restore from. Supports .gz files.
+
+  - name: query
+    label: SQL Query
+    type: string
+    required: false
+    placeholder: "SELECT COUNT(*) FROM users;"
+    description: SQL statement to execute (query operation only).
+
+  - name: extra_flags
+    label: Extra Flags
+    type: string
+    required: false
+    placeholder: "--single-transaction --routines --events"
+    description: Additional flags passed to mysqldump / mysql / mysqlcheck.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+
+output:
+  format: auto

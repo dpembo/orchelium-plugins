@@ -1,0 +1,98 @@
+name: proxmox-backup
+version: 1.0.0
+label: Proxmox VM Backup
+description: |
+  Run vzdump on a Proxmox host to back up one or more VMs or LXC containers.
+  The Orchelium agent must be running on (or have SSH access configured as)
+  the Proxmox node. Supports all vzdump modes and storage targets.
+
+inputs:
+  - name: vmid
+    label: VM / CT ID
+    type: string
+    required: true
+    placeholder: "100  or  101 102 103  or  all"
+    description: |
+      One or more VMID / CTID values separated by spaces, or 'all' to back up
+      every VM and container on the node.
+
+  - name: mode
+    label: Backup Mode
+    type: select
+    required: true
+    options:
+      - snapshot
+      - suspend
+      - stop
+    default: snapshot
+    description: |
+      snapshot — uses QEMU guest agent or internal snapshot (lowest downtime).
+      suspend  — suspends the VM briefly while the backup starts.
+      stop     — shuts the VM down for the duration of the backup.
+
+  - name: compress
+    label: Compression
+    type: select
+    required: false
+    options:
+      - zstd
+      - gzip
+      - lzo
+      - none
+    default: zstd
+    description: Backup archive compression format.
+
+  - name: storage
+    label: Proxmox Storage ID
+    type: string
+    required: false
+    placeholder: "backups-nfs"
+    description: |
+      Proxmox storage ID to write the backup to (as defined in
+      /etc/pve/storage.cfg). Takes precedence over Dump Directory if both
+      are set.
+
+  - name: dumpdir
+    label: Dump Directory (fallback)
+    type: string
+    required: false
+    placeholder: "/mnt/pve/backups-nfs/dump"
+    description: |
+      Absolute path on the node to write backup files to. Only used when
+      Proxmox Storage ID is not set.
+
+  - name: prune_backups
+    label: Prune / Retention Policy (optional)
+    type: string
+    required: false
+    placeholder: "keep-last=7"
+    description: |
+      Passed as --prune-backups to vzdump. Examples: keep-last=7,
+      keep-daily=7,keep-weekly=4,keep-monthly=6.
+      Leave empty to disable automatic pruning.
+
+  - name: mailto
+    label: Email Notification (optional)
+    type: string
+    required: false
+    placeholder: "admin@example.com"
+    description: Email address to notify when the backup completes or fails.
+
+  - name: notes_template
+    label: Backup Notes Template (optional)
+    type: string
+    required: false
+    placeholder: "Orchelium backup — {{guestname}} {{node}}"
+    description: Notes attached to the backup snapshot (vzdump --notes-template).
+
+  - name: extra_flags
+    label: Extra Flags (optional)
+    type: string
+    required: false
+    placeholder: "--bwlimit 20480 --remove 0"
+    description: Any additional vzdump flags appended verbatim to the command.
+
+command: ./run.sh
+
+output:
+  format: auto

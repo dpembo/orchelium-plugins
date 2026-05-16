@@ -1,0 +1,172 @@
+{
+  "registryVersion": "1",
+  "updated": "2026-05-16",
+  "source": "https://github.com/dpembo/orchelium-plugins",
+  "plugins": [
+    {
+      "name": "borg",
+      "label": "Borg Backup",
+      "description": "Run BorgBackup operations — create, prune, check, list, info, or compact — against local or remote repositories. Supports SSH remotes, passphrase authentication, deduplication, and compression.",
+      "version": "1.0.0",
+      "category": "backup",
+      "tags": ["backup", "dedup", "encryption", "ssh"],
+      "official": true,
+      "path": "borg",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "docker",
+      "label": "Docker",
+      "description": "Run common Docker operations from an Orchelium workflow node — start, stop, restart, exec, run, pull, rm, logs, ps, inspect, and prune.",
+      "version": "1.0.0",
+      "category": "containers",
+      "tags": ["docker", "containers", "devops"],
+      "official": true,
+      "path": "docker",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "lxc-pct",
+      "label": "LXC Container (PCT)",
+      "description": "Manage Proxmox LXC containers using the pct command. Supports start, stop, restart, exec, status, and snapshot operations.",
+      "version": "1.0.0",
+      "category": "containers",
+      "tags": ["lxc", "proxmox", "containers", "virtualisation"],
+      "official": true,
+      "path": "lxc-pct",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "mount",
+      "label": "Mount / Unmount",
+      "description": "Mount or unmount filesystems on the agent — NFS, CIFS/SMB, block devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs.",
+      "version": "1.0.0",
+      "category": "storage",
+      "tags": ["mount", "nfs", "smb", "luks", "filesystem"],
+      "official": true,
+      "path": "mount",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "mysql",
+      "label": "MySQL / MariaDB",
+      "description": "Backup, restore and manage MySQL / MariaDB databases. Uses mysqldump for exports and mysql / mysqlcheck for other operations.",
+      "version": "1.0.0",
+      "category": "databases",
+      "tags": ["mysql", "mariadb", "backup", "database"],
+      "official": true,
+      "path": "mysql",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "postgresql",
+      "label": "PostgreSQL",
+      "description": "Backup, restore and manage PostgreSQL databases. Uses pg_dump / pg_dumpall for exports and pg_restore / psql for imports.",
+      "version": "1.0.0",
+      "category": "databases",
+      "tags": ["postgresql", "postgres", "backup", "database"],
+      "official": true,
+      "path": "postgresql",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "proxmox-backup",
+      "label": "Proxmox VM Backup",
+      "description": "Run vzdump on a Proxmox host to back up one or more VMs or LXC containers. Supports all vzdump modes and storage targets.",
+      "version": "1.0.0",
+      "category": "backup",
+      "tags": ["proxmox", "vm", "backup", "vzdump"],
+      "official": true,
+      "path": "proxmox-backup",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "rclone",
+      "label": "Rclone",
+      "description": "Sync, copy, move, or check files between any rclone-supported storage backend — local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV, B2, Azure, and many more.",
+      "version": "1.0.0",
+      "category": "file-sync",
+      "tags": ["rclone", "cloud", "sync", "s3", "gdrive"],
+      "official": true,
+      "path": "rclone",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "restic",
+      "label": "Restic Backup",
+      "description": "Run a Restic backup, forget, or check operation against any supported repository — local, SFTP, REST server, S3, B2, Azure, GCS, and more.",
+      "version": "1.0.0",
+      "category": "backup",
+      "tags": ["restic", "backup", "dedup", "encryption"],
+      "official": true,
+      "path": "restic",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "rsync",
+      "label": "Rsync",
+      "description": "Synchronise or verify files between directories or hosts using rsync. Supports local-to-local, local-to-remote (SSH), and remote-to-local transfers.",
+      "version": "1.0.0",
+      "category": "file-sync",
+      "tags": ["rsync", "sync", "backup", "ssh"],
+      "official": true,
+      "path": "rsync",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "s3",
+      "label": "S3 Object Storage",
+      "description": "Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi, Backblaze B2, Cloudflare R2, etc.) using the AWS CLI.",
+      "version": "1.0.0",
+      "category": "file-sync",
+      "tags": ["s3", "aws", "minio", "cloud", "object-storage"],
+      "official": true,
+      "path": "s3",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "sqlite",
+      "label": "SQLite",
+      "description": "Backup, restore and manage SQLite database files. Uses the sqlite3 CLI — no server or authentication required. Supports online hot-backup, SQL dump/restore, and queries.",
+      "version": "1.0.0",
+      "category": "databases",
+      "tags": ["sqlite", "database", "backup"],
+      "official": true,
+      "path": "sqlite",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "truenas",
+      "label": "TrueNAS",
+      "description": "Manage TrueNAS CORE and SCALE via the REST API v2.0. Supports ZFS snapshots, replication tasks, and cloud sync tasks.",
+      "version": "1.0.0",
+      "category": "storage",
+      "tags": ["truenas", "zfs", "nas", "snapshots"],
+      "official": true,
+      "path": "truenas",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "zfs-send-receive",
+      "label": "ZFS Send / Receive",
+      "description": "Replicate ZFS datasets via zfs send | zfs receive. Supports full and incremental replication, recursive dataset trees, remote targets via SSH, and resume tokens.",
+      "version": "1.0.0",
+      "category": "storage",
+      "tags": ["zfs", "replication", "backup", "ssh"],
+      "official": true,
+      "path": "zfs-send-receive",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "zfs-snapshot",
+      "label": "ZFS Snapshot",
+      "description": "Create, destroy, list, rollback, or clone ZFS snapshots. Supports recursive operations, incremental sends, and remote replication via SSH.",
+      "version": "1.0.0",
+      "category": "storage",
+      "tags": ["zfs", "snapshot", "backup"],
+      "official": true,
+      "path": "zfs-snapshot",
+      "minOrcheliumVersion": "1.0.0"
+    }
+  ]
+}

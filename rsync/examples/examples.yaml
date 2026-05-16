@@ -1,0 +1,20 @@
+# Local directory sync
+
+source: /var/data/
+destination: /mnt/backup/data/
+options: "-avz --delete"
+
+---
+# Remote backup over SSH using a specific key
+
+source: /home/app/uploads/
+destination: backup@192.168.1.50:/volume1/app-uploads/
+options: "-avz --delete --exclude '.cache/'"
+ssh_key: /home/app/.ssh/backup_key
+
+---
+# Dry-run check before a destructive sync
+
+source: /data/old/
+destination: /data/new/
+options: "-avz --delete --dry-run"

@@ -1,0 +1,70 @@
+name: rsync
+version: 1.0.0
+label: Rsync
+description: |
+  Synchronise or verify files between directories or hosts using rsync.
+  Supports local-to-local, local-to-remote (SSH), and remote-to-local transfers.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - sync
+      - check
+    default: sync
+    description: |
+      sync  — transfer files from source to destination.
+      check — compare source and destination by checksum (--dry-run --checksum);
+              reports any mismatches without transferring anything.
+
+  - name: source
+    label: Source
+    type: string
+    required: true
+    placeholder: "user@host:/path/to/source  or  /local/path/"
+    description: Source path. Use trailing slash to sync contents, omit to sync the directory itself.
+
+  - name: destination
+    label: Destination
+    type: string
+    required: true
+    placeholder: "user@host:/path/to/dest  or  /local/dest/"
+    description: Destination path.
+
+  - name: options
+    label: Options
+    type: string
+    required: false
+    default: "-avz"
+    placeholder: "-avz --delete"
+    description: |
+      rsync flags. Common values:
+        -a  archive mode (recursive, preserve permissions/times/symlinks)
+        -v  verbose
+        -z  compress during transfer
+        --delete  remove destination files not in source
+        --dry-run  simulate without making changes
+        --exclude 'pattern'  skip matching files
+
+  - name: ssh_key
+    label: SSH Key Path (optional)
+    type: string
+    required: false
+    placeholder: "/home/user/.ssh/id_rsa"
+    description: Path to SSH private key on the agent. Leave empty for default key or local transfers.
+
+  - name: bandwidth_limit
+    label: Bandwidth Limit (KB/s, optional)
+    type: number
+    required: false
+    placeholder: "0"
+    description: Limit I/O bandwidth in KB/s. 0 means unlimited.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+
+output:
+  format: auto

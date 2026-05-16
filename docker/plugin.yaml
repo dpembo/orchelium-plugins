@@ -1,0 +1,168 @@
+name: docker
+version: 1.0.0
+label: Docker
+description: |
+  Run common Docker operations from an Orchelium workflow node — start, stop,
+  restart, exec, run, pull, rm, logs, ps, inspect, and prune. The Orchelium
+  agent must have access to the Docker socket on the target host.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - start
+      - stop
+      - restart
+      - exec
+      - run
+      - pull
+      - rm
+      - logs
+      - ps
+      - inspect
+      - prune
+    default: start
+    description: |
+      start   — start one or more stopped containers.
+      stop    — stop one or more running containers.
+      restart — restart one or more containers.
+      exec    — run a command inside a running container.
+      run     — create and start a one-off container, then remove it.
+      pull    — pull an image from a registry.
+      rm      — remove one or more containers (must be stopped).
+      logs    — fetch container log output.
+      ps      — list containers (outputs JSON summary).
+      inspect — return low-level container information as JSON.
+      prune   — remove all stopped containers, dangling images, and unused networks.
+
+  - name: container
+    label: Container Name / ID
+    type: string
+    required: false
+    placeholder: "my-app  or  a3f2b1c0d4e5"
+    description: |
+      Target container name or ID. Required for start, stop, restart, exec,
+      rm, logs, and inspect. Accepts a space-separated list for start/stop/restart/rm.
+
+  - name: image
+    label: Image (run / pull)
+    type: string
+    required: false
+    placeholder: "nginx:latest  or  ghcr.io/myorg/myapp:1.2.3"
+    description: |
+      Image name and tag. Required for run and pull operations.
+
+  - name: exec_command
+    label: Exec Command
+    type: string
+    required: false
+    placeholder: "/bin/sh -c 'pg_dump mydb > /backup/dump.sql'"
+    description: |
+      Command to run inside the container. Required for exec operation.
+      The whole string is passed via /bin/sh -c to support pipes and redirects.
+
+  - name: run_command
+    label: Run Command / Entrypoint Args
+    type: string
+    required: false
+    placeholder: "backup --output /data/backup.tar.gz"
+    description: |
+      Arguments passed to the container entrypoint for the run operation.
+      Leave empty to use the image default CMD.
+
+  - name: run_volumes
+    label: Volume Mounts (run)
+    type: string
+    required: false
+    placeholder: "/mnt/backup:/backup  /etc/config:/config:ro"
+    description: |
+      Space-separated volume mount specs in host:container[:options] format.
+      Each entry is passed as a separate -v flag. Only used for run.
+
+  - name: run_env
+    label: Environment Variables (run)
+    type: string
+    required: false
+    placeholder: "DB_HOST=localhost DB_PORT=5432"
+    description: |
+      Space-separated KEY=VALUE pairs. Each is passed as a separate -e flag.
+      Only used for run.
+
+  - name: run_network
+    label: Network (run)
+    type: string
+    required: false
+    placeholder: "myapp_network"
+    description: Docker network to connect the container to. Only used for run.
+
+  - name: run_extra_flags
+    label: Extra docker run Flags
+    type: string
+    required: false
+    placeholder: "--memory 512m --cpus 1"
+    description: |
+      Additional flags inserted before the image name in docker run.
+      Only used for run.
+
+  - name: stop_timeout
+    label: Stop Timeout (seconds)
+    type: number
+    required: false
+    placeholder: "10"
+    description: |
+      Seconds to wait for a graceful stop before SIGKILL (--time). Used by
+      stop and restart. Defaults to Docker's built-in default (10s).
+
+  - name: logs_tail
+    label: Log Lines (logs)
+    type: number
+    required: false
+    placeholder: "100"
+    default: "100"
+    description: Number of log lines to return from the tail of the container log.
+
+  - name: logs_since
+    label: Logs Since (optional)
+    type: string
+    required: false
+    placeholder: "1h  or  2026-05-15T00:00:00"
+    description: |
+      Return logs since this relative duration or timestamp. Examples: 10m, 2h,
+      2026-05-15T08:00:00. Only used for logs.
+
+  - name: ps_all
+    label: Show All Containers (ps)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Include stopped containers in ps output (-a). Default shows only running.
+
+  - name: prune_volumes
+    label: Also Prune Volumes (prune)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: Include unused volumes in the prune operation.
+
+  - name: docker_host
+    label: Docker Host (optional)
+    type: string
+    required: false
+    placeholder: "tcp://192.168.1.10:2376  or  unix:///var/run/docker.sock"
+    description: |
+      Override the Docker host socket or TCP endpoint (DOCKER_HOST). Leave
+      empty to use the agent's default socket (/var/run/docker.sock).
+
+command: ./run.sh
+
+output:
+  format: auto

@@ -1,0 +1,136 @@
+name: postgresql
+version: 1.0.0
+label: PostgreSQL
+description: |
+  Backup, restore and manage PostgreSQL databases.
+  Uses pg_dump / pg_dumpall for exports, pg_restore / psql for imports,
+  and standard psql / createdb / dropdb / vacuumdb utilities.
+  Passwords are managed via a PGPASSFILE (.pgpass) so they never appear
+  on the command line.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - dump
+      - dump-all
+      - restore
+      - query
+      - list-databases
+      - create-database
+      - drop-database
+      - vacuum
+    default: dump
+    description: |
+      dump            — export a single database (pg_dump, default custom format).
+      dump-all        — export all databases with roles/tablespaces (pg_dumpall).
+      restore         — restore from a dump file (.sql, .sql.gz, or custom/tar format).
+      query           — execute an arbitrary SQL statement (psql -c).
+      list-databases  — list all non-template databases on the server.
+      create-database — create a new database (createdb).
+      drop-database   — drop an existing database (dropdb, irreversible!).
+      vacuum          — run VACUUM ANALYZE on a database or all databases.
+
+  - name: host
+    label: Host
+    type: string
+    required: false
+    default: "localhost"
+    placeholder: "localhost"
+    description: PostgreSQL server hostname or IP address.
+
+  - name: port
+    label: Port
+    type: number
+    required: false
+    default: 5432
+    placeholder: "5432"
+    description: PostgreSQL server port.
+
+  - name: user
+    label: Username
+    type: string
+    required: false
+    default: "postgres"
+    placeholder: "postgres"
+    description: PostgreSQL username for the connection.
+
+  - name: password_file
+    label: Password File (.pgpass)
+    type: string
+    required: false
+    placeholder: "/root/.pgpass"
+    description: |
+      Path to a .pgpass file (format: hostname:port:database:username:password).
+      Set as PGPASSFILE so the password never appears on the command line.
+      The file must be chmod 600. Leave blank to use ~/.pgpass or a trust-auth socket.
+
+  - name: database
+    label: Database
+    type: string
+    required: false
+    placeholder: "mydb"
+    description: |
+      Target database name.
+      Required for: dump, restore, query, create-database, drop-database.
+      Optional for vacuum (leave empty to vacuum all databases).
+
+  - name: dump_file
+    label: Dump File Path
+    type: string
+    required: false
+    placeholder: "/backups/mydb_%Y-%m-%d.dump"
+    description: |
+      Output file path for dump / dump-all operations.
+      Supports strftime placeholders (%Y, %m, %d, %H, %M, %S).
+      For plain-format dumps use .sql or .sql.gz (enables auto gzip).
+      For custom format (default) use .dump or .backup.
+
+  - name: restore_file
+    label: Restore File Path
+    type: string
+    required: false
+    placeholder: "/backups/mydb_2025-01-01.dump"
+    description: |
+      Path to the dump file to restore.
+      .sql / .sql.gz → piped through psql.
+      Any other extension → passed to pg_restore (custom/tar format).
+
+  - name: dump_format
+    label: Dump Format
+    type: select
+    required: false
+    options:
+      - custom
+      - plain
+      - tar
+      - directory
+    default: custom
+    description: |
+      custom    — compressed, parallel-restore capable (pg_restore). Recommended.
+      plain     — human-readable SQL script (psql). Use .sql.gz for compression.
+      tar       — tar archive, allows selective restore.
+      directory — directory format, allows parallel dump.
+
+  - name: query
+    label: SQL Query
+    type: string
+    required: false
+    placeholder: "SELECT COUNT(*) FROM users;"
+    description: SQL statement to execute (query operation only).
+
+  - name: extra_flags
+    label: Extra Flags
+    type: string
+    required: false
+    placeholder: "--no-owner --no-acl --schema=public"
+    description: Additional flags passed to pg_dump / pg_restore / psql / vacuumdb.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+
+output:
+  format: auto

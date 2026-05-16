@@ -1,0 +1,129 @@
+name: s3
+version: 1.0.0
+label: S3 Object Storage
+description: |
+  Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi,
+  Backblaze B2, Cloudflare R2, etc.) using the AWS CLI.
+
+  Supports sync, upload, download, list, delete, bucket creation, and
+  pre-signed URL generation.
+
+  Credentials are read from a standard AWS credentials file or the agent's
+  environment variables — never passed on the command line.
+
+command: run.sh
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    options:
+      - sync
+      - upload
+      - download
+      - ls
+      - delete
+      - mb
+      - presign
+    default: sync
+
+  - name: bucket
+    label: Bucket
+    type: string
+    placeholder: "my-backup-bucket"
+    description: "Target S3 bucket name"
+
+  - name: prefix
+    label: S3 Prefix / Key
+    type: string
+    placeholder: "backups/databases/"
+    description: "Object key prefix (path within the bucket)"
+
+  - name: local_path
+    label: Local Path
+    type: string
+    placeholder: "/var/backups/databases  or  /backups/dump.sql.gz"
+    description: "Local file or directory for upload, download, or sync"
+
+  - name: credentials_file
+    label: AWS Credentials File (optional)
+    type: string
+    placeholder: "/etc/aws/backup-credentials"
+    description: "Path to an AWS credentials file. Defaults to ~/.aws/credentials or agent environment"
+
+  - name: profile
+    label: AWS Profile (optional)
+    type: string
+    placeholder: "default"
+    description: "Named profile from the credentials file"
+
+  - name: region
+    label: AWS Region (optional)
+    type: string
+    placeholder: "us-east-1"
+    description: "AWS region or leave blank for S3-compatible services"
+
+  - name: endpoint_url
+    label: Endpoint URL (optional)
+    type: string
+    placeholder: "https://s3.example.com  or  http://minio:9000"
+    description: "Custom S3-compatible endpoint (MinIO, Wasabi, R2, etc.). Leave blank for AWS"
+
+  - name: storage_class
+    label: Storage Class (optional)
+    type: select
+    options:
+      - ""
+      - STANDARD
+      - STANDARD_IA
+      - ONEZONE_IA
+      - INTELLIGENT_TIERING
+      - GLACIER
+      - GLACIER_IR
+      - DEEP_ARCHIVE
+    default: ""
+    description: "S3 storage class for uploaded objects"
+
+  - name: delete
+    label: Delete Extra Files (sync only)
+    type: select
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: "Remove objects from destination that no longer exist in source"
+
+  - name: dry_run
+    label: Dry Run
+    type: select
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: "Simulate the operation without making changes"
+
+  - name: exclude
+    label: Exclude Patterns (optional)
+    type: string
+    placeholder: "*.tmp .DS_Store"
+    description: "Space-separated glob patterns to exclude"
+
+  - name: include
+    label: Include Patterns (optional)
+    type: string
+    placeholder: "*.sql.gz *.dump"
+    description: "Space-separated glob patterns to include (applied after excludes)"
+
+  - name: presign_expires
+    label: Presign Expiry (seconds)
+    type: number
+    placeholder: "3600"
+    description: "URL validity period for the presign operation (default: 3600)"
+
+  - name: extra_flags
+    label: Extra Flags (optional)
+    type: string
+    placeholder: "--no-progress --acl private"
+    description: "Any additional AWS CLI flags"
+
+output:
+  format: auto

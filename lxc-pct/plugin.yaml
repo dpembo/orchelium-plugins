@@ -1,0 +1,123 @@
+name: lxc-pct
+version: 1.0.0
+label: LXC Container (PCT)
+description: |
+  Manage Proxmox LXC containers using the pct (Proxmox Container Toolkit)
+  command. The Orchelium agent must run on the Proxmox node that hosts the
+  containers. Supports start, stop, restart, exec, status, snapshot,
+  rollback, destroy-snapshot, clone, and list operations.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - start
+      - stop
+      - restart
+      - exec
+      - status
+      - snapshot
+      - rollback
+      - destroy-snapshot
+      - clone
+      - list
+    default: start
+    description: |
+      start            — start a stopped container.
+      stop             — stop a running container.
+      restart          — stop then start a container.
+      exec             — run a command inside a running container.
+      status           — show current state (running/stopped) as JSON.
+      snapshot         — create a snapshot of a container.
+      rollback         — roll a container back to a named snapshot.
+      destroy-snapshot — delete a named snapshot.
+      clone            — clone a container to a new CTID.
+      list             — list all containers on the node as JSON.
+
+  - name: ctid
+    label: Container ID (CTID)
+    type: string
+    required: false
+    placeholder: "101"
+    description: |
+      Proxmox container ID. Required for all operations except list.
+
+  - name: exec_command
+    label: Exec Command
+    type: string
+    required: false
+    placeholder: "bash -c 'pg_dump mydb > /tmp/dump.sql'"
+    description: |
+      Command to run inside the container. Required for exec operation.
+      Passed verbatim after pct exec <ctid> --.
+
+  - name: snapshot_name
+    label: Snapshot Name
+    type: string
+    required: false
+    placeholder: "pre-update"
+    description: |
+      Name for the snapshot. Required for snapshot, rollback, and
+      destroy-snapshot operations.
+
+  - name: snapshot_description
+    label: Snapshot Description (optional)
+    type: string
+    required: false
+    placeholder: "Before package upgrade"
+    description: |
+      Human-readable description stored with the snapshot. Only used for
+      snapshot operation.
+
+  - name: clone_target_ctid
+    label: Clone Target CTID
+    type: string
+    required: false
+    placeholder: "201"
+    description: |
+      New container ID for the cloned container. Required for clone operation.
+
+  - name: clone_hostname
+    label: Clone Hostname (optional)
+    type: string
+    required: false
+    placeholder: "myapp-clone"
+    description: Hostname for the cloned container.
+
+  - name: clone_full
+    label: Full Clone (not linked)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Create a full independent clone instead of a linked clone.
+      Linked clones share the base storage; full clones are independent.
+
+  - name: stop_timeout
+    label: Stop Timeout (seconds)
+    type: number
+    required: false
+    placeholder: "60"
+    description: |
+      Seconds to wait for clean shutdown before forcing stop. Only used
+      for stop and restart operations.
+
+  - name: force_stop
+    label: Force Stop
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: Force immediate container stop (--skiplock). Use with caution.
+
+command: ./run.sh
+
+output:
+  format: auto

@@ -1,0 +1,135 @@
+name: mount
+version: 1.0.0
+label: Mount / Unmount
+description: |
+  Mount or unmount filesystems on the agent — NFS, CIFS/SMB, ext4/xfs/btrfs
+  block devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs.
+  Can also check whether a path is currently mounted.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - mount
+      - unmount
+      - remount
+      - status
+    default: mount
+    description: |
+      mount   — mount the specified source to the target path.
+      unmount — unmount a target path or device.
+      remount — remount with updated options (mount -o remount).
+      status  — check whether a path is currently mounted (non-destructive).
+
+  - name: mount_type
+    label: Mount Type
+    type: select
+    required: false
+    options:
+      - auto
+      - nfs
+      - cifs
+      - ext4
+      - xfs
+      - btrfs
+      - vfat
+      - luks
+      - loop
+      - bind
+      - tmpfs
+    default: auto
+    description: |
+      Filesystem type passed to mount -t. Use auto to let the kernel detect.
+      Use luks for LUKS-encrypted block devices (opens via cryptsetup first).
+      Use loop for image files (.img/.iso).
+
+  - name: source
+    label: Source
+    type: string
+    required: false
+    placeholder: "192.168.1.10:/export/data  or  //server/share  or  /dev/sdb1  or  /path/to/image.img"
+    description: |
+      Device, network share, or image file to mount. Not required for
+      unmount or status operations.
+
+  - name: target
+    label: Mount Point
+    type: string
+    required: true
+    placeholder: "/mnt/backup"
+    description: Directory to mount to, or path to check/unmount.
+
+  - name: options
+    label: Mount Options (optional)
+    type: string
+    required: false
+    placeholder: "ro,noatime  or  username=user,password=pass,uid=1000"
+    description: |
+      Comma-separated mount options passed to -o. For CIFS include
+      username and password here or use a credentials file.
+
+  - name: credentials_file
+    label: CIFS Credentials File (optional)
+    type: string
+    required: false
+    placeholder: "/etc/samba/credentials"
+    description: |
+      Path to a credentials file (credentials=...) for CIFS/SMB mounts.
+      File format: username=user\npassword=pass\ndomain=DOMAIN
+
+  - name: luks_name
+    label: LUKS Mapper Name (luks type only)
+    type: string
+    required: false
+    placeholder: "backup-crypt"
+    description: |
+      Name for the decrypted device under /dev/mapper/. Required when
+      mount_type is luks. The mapped device is mounted at the target path.
+
+  - name: luks_keyfile
+    label: LUKS Key File (luks type only)
+    type: string
+    required: false
+    placeholder: "/etc/luks/backup.key"
+    description: |
+      Path to a LUKS key file on the agent. Leave empty to use the
+      LUKS_PASSPHRASE environment variable.
+
+  - name: create_target
+    label: Create Mount Point if Missing
+    type: select
+    required: false
+    options:
+      - "yes"
+      - "no"
+    default: "yes"
+    description: Automatically create the target directory if it does not exist.
+
+  - name: lazy_unmount
+    label: Lazy Unmount (-l)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Use umount -l (lazy) — detaches the filesystem immediately even if
+      it is still in use. Files in use can still be accessed until closed.
+
+  - name: force_unmount
+    label: Force Unmount (-f)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: Force unmount even if the filesystem is busy (NFS mainly).
+
+command: ./run.sh
+
+output:
+  format: auto

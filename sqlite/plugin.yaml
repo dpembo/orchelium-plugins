@@ -1,0 +1,78 @@
+name: sqlite
+version: 1.0.0
+label: SQLite
+description: |
+  Backup, restore and manage SQLite database files.
+  Uses the sqlite3 CLI for all operations — no server or authentication required.
+  Supports online hot-backup (.backup command), SQL dump/restore, queries,
+  VACUUM, integrity checks, and table listing.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - dump
+      - restore
+      - backup
+      - query
+      - vacuum
+      - integrity-check
+      - tables
+    default: dump
+    description: |
+      dump            — export database as a SQL script (supports .gz compression).
+      restore         — import a SQL script into a database file (supports .gz).
+      backup          — online hot-backup using SQLite's .backup command (safe on live DB).
+      query           — execute an arbitrary SQL statement.
+      vacuum          — run VACUUM to defragment and reclaim space.
+      integrity-check — run PRAGMA integrity_check; exits 1 if database is corrupt.
+      tables          — list all tables in the database.
+
+  - name: database_file
+    label: Database File
+    type: string
+    required: true
+    placeholder: "/var/lib/myapp/app.db"
+    description: |
+      Path to the SQLite database file (.db, .sqlite, .sqlite3).
+      For restore / backup operations this is always the target file.
+
+  - name: dump_file
+    label: Dump / Backup File Path
+    type: string
+    required: false
+    placeholder: "/backups/app_%Y-%m-%d.sql.gz"
+    description: |
+      Output file path for dump and backup operations.
+      Supports strftime placeholders (%Y, %m, %d, %H, %M, %S).
+      Append .gz to enable automatic gzip compression (dump only).
+
+  - name: restore_file
+    label: Restore File Path
+    type: string
+    required: false
+    placeholder: "/backups/app_2025-01-01.sql.gz"
+    description: Path to the SQL dump file to restore from. Supports .gz files.
+
+  - name: query
+    label: SQL Query
+    type: string
+    required: false
+    placeholder: "SELECT COUNT(*) FROM users;"
+    description: SQL statement to execute (query operation only).
+
+  - name: extra_flags
+    label: Extra Flags
+    type: string
+    required: false
+    placeholder: "-readonly"
+    description: Additional flags passed to the sqlite3 binary.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+
+output:
+  format: auto

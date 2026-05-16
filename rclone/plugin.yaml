@@ -1,0 +1,151 @@
+name: rclone
+version: 1.0.0
+label: Rclone
+description: |
+  Sync, copy, move, or check files between any rclone-supported storage
+  backend — local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV,
+  B2, Azure, GCS, and many more. Remotes must be pre-configured in the
+  rclone config file on the agent.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - sync
+      - copy
+      - move
+      - check
+      - ls
+      - delete
+      - purge
+    default: sync
+    description: |
+      sync   — make destination identical to source (deletes extraneous destination files).
+      copy   — copy new/updated files without deleting destination files.
+      move   — move files from source to destination.
+      check  — verify that source and destination match without transferring.
+      ls     — list files on a remote (output captured as JSON).
+      delete — delete files in a path matching filters.
+      purge  — delete a path and all its contents.
+
+  - name: source
+    label: Source
+    type: string
+    required: true
+    placeholder: "/local/path  or  remote:bucket/path  or  gdrive:Backups"
+    description: |
+      Source path. Use remote:path syntax for rclone remotes, or an absolute
+      path for local sources.
+
+  - name: destination
+    label: Destination
+    type: string
+    required: false
+    placeholder: "s3backup:mybucket/data  or  /mnt/backup"
+    description: |
+      Destination path. Required for sync, copy, move, and check operations.
+
+  - name: config_file
+    label: Config File (optional)
+    type: string
+    required: false
+    placeholder: "/etc/rclone/rclone.conf"
+    description: |
+      Path to a custom rclone config file on the agent. Leave empty to use
+      the default (~/.config/rclone/rclone.conf or RCLONE_CONFIG env var).
+
+  - name: transfers
+    label: Parallel Transfers
+    type: number
+    required: false
+    placeholder: "4"
+    description: Number of file transfers to run in parallel (--transfers).
+
+  - name: checkers
+    label: Parallel Checkers
+    type: number
+    required: false
+    placeholder: "8"
+    description: Number of checkers to run in parallel (--checkers).
+
+  - name: bwlimit
+    label: Bandwidth Limit (optional)
+    type: string
+    required: false
+    placeholder: "10M  or  1G  or  10M:off"
+    description: |
+      Limit bandwidth. Accepts rclone bandwidth syntax: 10M, 1G, or a
+      timetable string like 08:00,10M 20:00,off.
+
+  - name: include
+    label: Include Patterns (optional)
+    type: string
+    required: false
+    placeholder: "*.jpg *.png"
+    description: |
+      Space-separated glob patterns to include (each passed as --include).
+
+  - name: exclude
+    label: Exclude Patterns (optional)
+    type: string
+    required: false
+    placeholder: ".cache/ *.tmp"
+    description: |
+      Space-separated glob patterns to exclude (each passed as --exclude).
+
+  - name: filter_file
+    label: Filter File (optional)
+    type: string
+    required: false
+    placeholder: "/etc/rclone/filters.txt"
+    description: Path to an rclone filter file (--filter-from).
+
+  - name: checksum
+    label: Use Checksum Comparison
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Compare files by checksum instead of modification time + size.
+      Slower but more accurate (--checksum).
+
+  - name: dry_run
+    label: Dry Run
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Run without making any changes (--dry-run). Useful for testing
+      filters and verifying what would be transferred.
+
+  - name: log_level
+    label: Log Level
+    type: select
+    required: false
+    options:
+      - NOTICE
+      - INFO
+      - DEBUG
+      - ERROR
+    default: NOTICE
+    description: rclone log verbosity.
+
+  - name: extra_flags
+    label: Extra Flags (optional)
+    type: string
+    required: false
+    placeholder: "--delete-before --fast-list"
+    description: Any additional rclone flags appended verbatim.
+
+command: ./run.sh
+
+output:
+  format: auto

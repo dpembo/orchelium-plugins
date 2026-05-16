@@ -1,0 +1,90 @@
+name: truenas
+version: 1.0.0
+label: TrueNAS
+description: |
+  Manage TrueNAS CORE and SCALE via the REST API v2.0.
+
+  Supports ZFS snapshots, triggering replication and cloud sync tasks,
+  listing datasets, and starting pool scrubs — all without needing SSH
+  access to the NAS.
+
+  Authentication uses a TrueNAS API key stored in a file on the agent.
+
+command: run.sh
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    options:
+      - snapshot
+      - delete-snapshot
+      - list-snapshots
+      - replication-run
+      - cloudsync-run
+      - dataset-list
+      - scrub
+    default: snapshot
+
+  - name: host
+    label: TrueNAS Host
+    type: string
+    placeholder: "192.168.1.10  or  truenas.local  or  https://truenas.local"
+    description: "Hostname, IP, or full URL of the TrueNAS server"
+
+  - name: api_key_file
+    label: API Key File
+    type: string
+    placeholder: "/etc/truenas/api.key"
+    description: "Path to a file containing the TrueNAS API key (one line)"
+
+  - name: verify_ssl
+    label: Verify SSL Certificate
+    type: select
+    options:
+      - "yes"
+      - "no"
+    default: "yes"
+    description: "Set to 'no' for self-signed certificates (not recommended in production)"
+
+  - name: dataset
+    label: Dataset
+    type: string
+    placeholder: "pool/data  or  tank/vm-storage"
+    description: "ZFS dataset path (for snapshot / list-snapshots)"
+
+  - name: snapshot_name
+    label: Snapshot Name
+    type: string
+    placeholder: "auto-%Y-%m-%dT%H:%M:%S"
+    default: "auto-%Y-%m-%dT%H:%M:%S"
+    description: "Snapshot name. Supports strftime placeholders (%Y, %m, %d, etc.)"
+
+  - name: recursive
+    label: Recursive Snapshot
+    type: select
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: "Include all child datasets in the snapshot"
+
+  - name: task_name
+    label: Task Name
+    type: string
+    placeholder: "Daily Offsite Replication"
+    description: "Name of the replication or cloud sync task to run (matched case-insensitively)"
+
+  - name: pool
+    label: Pool Name (scrub)
+    type: string
+    placeholder: "tank"
+    description: "ZFS pool name for the scrub operation"
+
+  - name: timeout
+    label: API Timeout (seconds)
+    type: number
+    placeholder: "30"
+    description: "Maximum time to wait for an API response (default: 30)"
+
+output:
+  format: auto

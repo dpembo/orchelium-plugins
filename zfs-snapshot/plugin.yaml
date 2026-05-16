@@ -1,0 +1,104 @@
+name: zfs-snapshot
+version: 1.0.0
+label: ZFS Snapshot
+description: |
+  Create, destroy, list, send/receive, rollback, or clone ZFS snapshots.
+  Supports recursive operations, incremental sends, and remote replication
+  via SSH piped zfs receive.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - snapshot
+      - destroy
+      - list
+      - send
+      - rollback
+      - clone
+    default: snapshot
+    description: |
+      snapshot — create a new snapshot.
+      destroy  — delete a snapshot or range of snapshots.
+      list     — list snapshots on a dataset.
+      send     — stream a snapshot to a file or remote host via SSH.
+      rollback — roll a dataset back to a snapshot.
+      clone    — create a writable clone from a snapshot.
+
+  - name: dataset
+    label: Dataset
+    type: string
+    required: true
+    placeholder: "pool/data  or  tank/home"
+    description: ZFS dataset to operate on (without the @ snapshot suffix).
+
+  - name: snapshot_name
+    label: Snapshot Name
+    type: string
+    required: false
+    placeholder: "auto-%Y-%m-%dT%H:%M:%S"
+    default: "auto-%Y-%m-%dT%H:%M:%S"
+    description: |
+      Snapshot suffix (after @). Supports strftime placeholders such as
+      %Y-%m-%dT%H:%M:%S which are expanded at runtime. Used by snapshot,
+      destroy, send, rollback, and clone.
+
+  - name: recursive
+    label: Recursive
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Pass -r to apply the operation recursively to all child datasets.
+      Applies to snapshot, destroy, list, and send.
+
+  - name: incremental_from
+    label: Incremental From (send only)
+    type: string
+    required: false
+    placeholder: "auto-2026-05-14T02:00:00"
+    description: |
+      Name of an existing snapshot to use as the incremental base (-i flag).
+      Leave empty for a full send.
+
+  - name: send_target
+    label: Send Target
+    type: string
+    required: false
+    placeholder: "user@remotehost  or  /mnt/backup/stream.zfs"
+    description: |
+      For send operation. If it looks like user@host the stream is piped via
+      SSH to zfs receive on the remote. Otherwise treated as a local file path.
+
+  - name: send_dataset_remote
+    label: Remote Receive Dataset (send via SSH)
+    type: string
+    required: false
+    placeholder: "backup/home"
+    description: |
+      The destination dataset on the remote host for zfs receive.
+      Only used when Send Target is an SSH address.
+
+  - name: clone_target
+    label: Clone Target Dataset
+    type: string
+    required: false
+    placeholder: "pool/home-restore"
+    description: New dataset name for the clone. Required for clone operation.
+
+  - name: extra_flags
+    label: Extra Flags (optional)
+    type: string
+    required: false
+    placeholder: "-p"
+    description: Additional flags appended verbatim to the zfs command.
+
+command: ./run.sh
+
+output:
+  format: auto

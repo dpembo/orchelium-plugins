@@ -1,0 +1,146 @@
+name: zfs-send-receive
+version: 1.0.0
+label: ZFS Send / Receive
+description: |
+  Replicate ZFS datasets via zfs send | zfs receive. Supports full and
+  incremental replication, recursive replication of dataset trees, remote
+  targets via SSH, raw encrypted streams, and resume tokens for interrupted
+  transfers.
+
+inputs:
+  - name: source_dataset
+    label: Source Dataset
+    type: string
+    required: true
+    placeholder: "tank/data"
+    description: ZFS dataset to replicate (without snapshot suffix).
+
+  - name: source_snapshot
+    label: Source Snapshot
+    type: string
+    required: false
+    placeholder: "auto-2026-05-15T02:00:00  or  latest"
+    default: "latest"
+    description: |
+      Snapshot to send. Use 'latest' to automatically resolve to the most
+      recent snapshot on the source dataset.
+
+  - name: incremental_from
+    label: Incremental From Snapshot
+    type: string
+    required: false
+    placeholder: "auto-2026-05-14T02:00:00"
+    description: |
+      Name of an older snapshot to use as the incremental base (-i).
+      Leave empty for a full send. Use 'auto' to automatically pick the
+      most recent snapshot on the destination as the base.
+
+  - name: recursive
+    label: Recursive (-R)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: Replicate the dataset and all child datasets.
+
+  - name: target_type
+    label: Target Type
+    type: select
+    required: true
+    options:
+      - ssh
+      - local
+      - file
+    default: ssh
+    description: |
+      ssh   — pipe the stream to a remote host via SSH.
+      local — receive into a local ZFS dataset on the same machine.
+      file  — write the raw stream to a local file.
+
+  - name: target_host
+    label: Target Host (SSH only)
+    type: string
+    required: false
+    placeholder: "user@backuphost  or  user@192.168.1.10"
+    description: SSH destination. Only used when Target Type is ssh.
+
+  - name: target_dataset
+    label: Target Dataset (ssh / local)
+    type: string
+    required: true
+    placeholder: "backup/data"
+    description: |
+      Destination dataset for zfs receive. For SSH targets this is the
+      dataset on the remote host. For local targets it is on this machine.
+
+  - name: target_file
+    label: Target File Path (file only)
+    type: string
+    required: false
+    placeholder: "/mnt/external/data.zfs"
+    description: |
+      Full path to write the stream file. Only used when Target Type is file.
+
+  - name: ssh_key
+    label: SSH Key (optional)
+    type: string
+    required: false
+    placeholder: "/root/.ssh/id_ed25519"
+    description: |
+      Path to an SSH private key on the agent. Leave empty to use the default
+      SSH key or agent forwarding.
+
+  - name: ssh_port
+    label: SSH Port (optional)
+    type: number
+    required: false
+    placeholder: "22"
+    description: SSH port on the target host. Defaults to 22.
+
+  - name: raw
+    label: Raw / Encrypted Stream (-w)
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Send the raw encrypted stream (zfs send -w). Required when replicating
+      datasets with native ZFS encryption enabled.
+
+  - name: resume
+    label: Resume Interrupted Transfer
+    type: select
+    required: false
+    options:
+      - "no"
+      - "yes"
+    default: "no"
+    description: |
+      Use the destination resume token (zfs send -t) to continue an
+      interrupted transfer. When yes, source_snapshot and incremental_from
+      are ignored and the token is read from the destination.
+
+  - name: receive_flags
+    label: Receive Flags (optional)
+    type: string
+    required: false
+    placeholder: "-u -o mountpoint=none"
+    description: |
+      Extra flags passed to zfs receive. -F (force rollback) and -u
+      (do not mount) are common choices.
+
+  - name: extra_send_flags
+    label: Extra Send Flags (optional)
+    type: string
+    required: false
+    placeholder: "-v -c"
+    description: Additional flags appended to the zfs send command.
+
+command: ./run.sh
+
+output:
+  format: auto

@@ -1,0 +1,113 @@
+name: borg
+version: 1.0.0
+label: Borg Backup
+description: |
+  Run BorgBackup (borg) operations — create, prune, check, list, info, or
+  compact — against local or remote repositories. Supports SSH remotes,
+  passphrase authentication, deduplication, and compression.
+
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - create
+      - prune
+      - check
+      - list
+      - info
+      - compact
+    default: create
+    description: |
+      create  — create a new archive (backup).
+      prune   — apply a retention policy to archives.
+      check   — verify repository/archive integrity.
+      list    — list archives in the repository.
+      info    — show statistics for the repository or an archive.
+      compact — free space in the repository segment files.
+
+  - name: repo
+    label: Repository
+    type: string
+    required: true
+    placeholder: "/mnt/backup/myrepo  or  user@host:/backup/myrepo  or  ssh://user@host:22/~/backup"
+    description: Borg repository path or SSH URL.
+
+  - name: archive_name
+    label: Archive Name
+    type: string
+    required: false
+    placeholder: "{hostname}-{now:%Y-%m-%dT%H:%M:%S}"
+    default: "{hostname}-{now:%Y-%m-%dT%H:%M:%S}"
+    description: |
+      Name for the new archive. Borg placeholders like {hostname} and
+      {now:%Y-%m-%dT%H:%M:%S} are expanded by borg. Only used for create.
+
+  - name: paths
+    label: Paths to Back Up
+    type: string
+    required: false
+    placeholder: "/home/dave /var/www /etc"
+    description: |
+      Space-separated list of paths to include in the archive.
+      Required for the create operation.
+
+  - name: passphrase_file
+    label: Passphrase File
+    type: string
+    required: false
+    placeholder: "/etc/borg/passphrase"
+    description: |
+      Path to a file containing the repository passphrase on the agent.
+      Leave empty to use the BORG_PASSPHRASE environment variable instead.
+
+  - name: compression
+    label: Compression
+    type: select
+    required: false
+    options:
+      - lz4
+      - zstd
+      - zlib
+      - lzma
+      - none
+    default: lz4
+    description: Compression algorithm. Only used for create.
+
+  - name: exclude
+    label: Exclude Patterns (optional)
+    type: string
+    required: false
+    placeholder: "/home/*/.cache *.tmp"
+    description: Space-separated exclude patterns (each passed as --exclude).
+
+  - name: prune_policy
+    label: Prune / Retention Policy
+    type: string
+    required: false
+    placeholder: "--keep-daily 7 --keep-weekly 4 --keep-monthly 6"
+    description: |
+      Retention flags passed to borg prune. Only used for prune operation.
+      Add --save-space to also run a compact step.
+
+  - name: archive_ref
+    label: Archive Reference (list/info/check)
+    type: string
+    required: false
+    placeholder: "latest  or  myhost-2026-05-15T12:00:00"
+    description: |
+      Archive name or 'latest' for info/check on a specific archive.
+      Leave empty to target the whole repository.
+
+  - name: extra_flags
+    label: Extra Flags (optional)
+    type: string
+    required: false
+    placeholder: "--stats --progress"
+    description: Additional borg flags appended verbatim to the command.
+
+command: ./run.sh
+
+output:
+  format: auto

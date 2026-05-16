@@ -136,6 +136,28 @@
       "minOrcheliumVersion": "1.0.0"
     },
     {
+      "name": "systemd",
+      "label": "Systemd Service",
+      "description": "Manage systemd services on the agent host — start, stop, restart, reload, enable, disable, or query service status using systemctl.",
+      "version": "1.0.0",
+      "category": "system",
+      "tags": ["systemd", "services", "linux", "init"],
+      "official": true,
+      "path": "systemd",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "tar",
+      "label": "Tar Archive",
+      "description": "Create, extract, or list tar archives with optional gzip, bzip2, xz, or zstd compression. No dependencies beyond the standard tar command.",
+      "version": "1.0.0",
+      "category": "backup",
+      "tags": ["tar", "archive", "backup", "compression"],
+      "official": true,
+      "path": "tar",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
       "name": "truenas",
       "label": "TrueNAS",
       "description": "Manage TrueNAS CORE and SCALE via the REST API v2.0. Supports ZFS snapshots, replication tasks, and cloud sync tasks.",
@@ -166,6 +188,17 @@
       "tags": ["zfs", "snapshot", "backup"],
       "official": true,
       "path": "zfs-snapshot",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "wake-on-lan",
+      "label": "Wake on LAN",
+      "description": "Send a Wake-on-LAN magic packet to power on a sleeping machine on the local network. Uses Python 3 — no external tools required.",
+      "version": "1.0.0",
+      "category": "system",
+      "tags": ["wake-on-lan", "wol", "network", "power"],
+      "official": true,
+      "path": "wake-on-lan",
       "minOrcheliumVersion": "1.0.0"
     }
   ]

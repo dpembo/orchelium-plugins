@@ -1,0 +1,57 @@
+name: systemd
+version: 1.0.0
+label: Systemd Service
+description: |
+  Manage systemd services on the agent host. Start, stop, restart, reload,
+  enable, disable, or query the status of any systemd unit. Supports both
+  system-wide units and per-user units via the --user flag.
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - start
+      - stop
+      - restart
+      - reload
+      - enable
+      - disable
+      - status
+      - is-active
+    default: status
+    description: |
+      The systemctl operation to perform on the service unit.
+
+  - name: service
+    label: Service Name
+    type: string
+    required: true
+    placeholder: "e.g. nginx or nginx.service"
+    description: |
+      The name of the systemd unit. The .service suffix is optional for service
+      units — e.g. 'nginx' and 'nginx.service' are equivalent.
+
+  - name: user_mode
+    label: User Mode (--user)
+    type: boolean
+    required: false
+    default: false
+    description: |
+      Run systemctl with the --user flag to target the calling user's systemd
+      session instead of the system-wide daemon.
+
+  - name: no_block
+    label: Non-blocking (--no-block)
+    type: boolean
+    required: false
+    default: false
+    description: |
+      Pass --no-block to systemctl. Start/stop commands return immediately
+      without waiting for the job to finish. Useful in fire-and-forget workflows.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+output:
+  format: auto

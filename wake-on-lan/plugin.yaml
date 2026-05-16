@@ -1,0 +1,64 @@
+name: wake-on-lan
+version: 1.0.0
+label: Wake on LAN
+description: |
+  Send a Wake-on-LAN (WoL) magic packet to wake a sleeping or powered-off
+  machine on the local network. Uses Python 3 to craft and broadcast the
+  magic packet via UDP — no external tools required.
+inputs:
+  - name: mac_address
+    label: MAC Address
+    type: string
+    required: true
+    placeholder: "AA:BB:CC:DD:EE:FF"
+    description: |
+      The MAC address of the target machine's network interface.
+      Accepts colon-separated (AA:BB:CC:DD:EE:FF) or hyphen-separated
+      (AA-BB-CC-DD-EE-FF) formats. Case-insensitive.
+
+  - name: broadcast_ip
+    label: Broadcast IP
+    type: string
+    required: false
+    default: "255.255.255.255"
+    placeholder: "255.255.255.255"
+    description: |
+      The UDP broadcast address to send the magic packet to.
+      Use the default (255.255.255.255) for global broadcast, or specify
+      a subnet broadcast address (e.g. 192.168.1.255) to target a
+      specific VLAN or subnet.
+
+  - name: port
+    label: UDP Port
+    type: number
+    required: false
+    default: 9
+    description: |
+      UDP port for the magic packet. Port 9 (discard) is the standard.
+      Port 7 is also commonly used. Change only if your router or switch
+      requires a specific port for WoL forwarding.
+
+  - name: count
+    label: Packet Count
+    type: number
+    required: false
+    default: 3
+    description: |
+      Number of magic packets to send. Sending 3 packets increases
+      reliability on busy or noisy networks.
+
+  - name: wait_seconds
+    label: Wait After Send (seconds)
+    type: number
+    required: false
+    default: 0
+    description: |
+      Seconds to wait after sending the packet. Useful when the next
+      workflow node needs the target machine to be up (e.g. a ping or
+      SSH check node).
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+output:
+  format: auto

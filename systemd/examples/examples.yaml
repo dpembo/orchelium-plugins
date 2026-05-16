@@ -1,0 +1,24 @@
+# Check whether nginx is running
+operation: status
+service: nginx
+
+---
+# Restart the Docker daemon after a config change
+operation: restart
+service: docker
+
+---
+# Enable postgresql to start at boot
+operation: enable
+service: postgresql
+
+---
+# Stop a service before taking a backup
+operation: stop
+service: mysql
+
+---
+# User-level service (no root needed)
+operation: start
+service: pulseaudio
+user_mode: true

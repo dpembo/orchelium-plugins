@@ -1,0 +1,19 @@
+# Basic: wake a machine on the local network
+mac_address: "AA:BB:CC:DD:EE:FF"
+
+---
+# Wake a machine on a specific VLAN subnet
+mac_address: "AA:BB:CC:DD:EE:FF"
+broadcast_ip: "192.168.10.255"
+port: 9
+
+---
+# Wake then pause 90 s while the machine boots (before a connection check)
+mac_address: "AA:BB:CC:DD:EE:FF"
+wait_seconds: 90
+count: 5
+
+---
+# Hyphen-separated MAC format (also accepted)
+mac_address: "AA-BB-CC-DD-EE-FF"
+broadcast_ip: "255.255.255.255"

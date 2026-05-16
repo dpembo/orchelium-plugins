@@ -1,0 +1,88 @@
+name: tar
+version: 1.0.0
+label: Tar Archive
+description: |
+  Create, extract, or list tar archives on the agent host. Supports gzip,
+  bzip2, xz, and zstd compression. No external dependencies beyond the
+  standard tar command available on every Linux and macOS system.
+inputs:
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - create
+      - extract
+      - list
+    default: create
+    description: |
+      create — bundle files into a new archive.
+      extract — unpack an existing archive.
+      list — show the contents of an archive without extracting.
+
+  - name: archive
+    label: Archive Path
+    type: string
+    required: true
+    placeholder: "/backup/mybackup.tar.gz"
+    description: |
+      Full path to the archive file. For 'create' this is the output file.
+      For 'extract' and 'list' this is the input file.
+
+  - name: source
+    label: Source Path(s)
+    type: string
+    required: false
+    placeholder: "/var/data/ /etc/app.conf"
+    description: |
+      Space-separated list of files or directories to include. Required for
+      the 'create' operation. Ignored for 'extract' and 'list'.
+
+  - name: destination
+    label: Extract Destination
+    type: string
+    required: false
+    placeholder: "/restore/"
+    description: |
+      Directory to extract into. Used only for 'extract'. If omitted, files
+      are extracted into the current working directory.
+
+  - name: compression
+    label: Compression
+    type: select
+    required: false
+    options:
+      - auto
+      - none
+      - gzip
+      - bzip2
+      - xz
+      - zstd
+    default: auto
+    description: |
+      Compression algorithm for 'create'. 'auto' detects from the archive
+      file extension (.gz, .bz2, .xz, .zst). Ignored for 'extract' and
+      'list' (tar auto-detects).
+
+  - name: exclude
+    label: Exclude Pattern(s)
+    type: string
+    required: false
+    placeholder: "*.log *.tmp .cache"
+    description: |
+      Space-separated glob patterns to exclude during 'create'.
+      e.g. '*.log *.tmp' — each becomes a separate --exclude flag.
+
+  - name: options
+    label: Extra tar Flags
+    type: string
+    required: false
+    placeholder: "--numeric-owner --preserve-permissions"
+    description: |
+      Additional raw flags passed directly to tar. Advanced use only.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+output:
+  format: auto

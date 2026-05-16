@@ -1,0 +1,29 @@
+# Full directory backup with gzip (auto-detected from .tar.gz extension)
+operation: create
+archive: /backup/var-data-2024-01-15.tar.gz
+source: /var/data/
+
+---
+# Exclude logs and temp files, use xz compression
+operation: create
+archive: /backup/app.tar.xz
+source: /opt/myapp/
+exclude: "*.log *.tmp node_modules .cache"
+
+---
+# Extract a backup to a staging directory
+operation: extract
+archive: /backup/var-data-2024-01-15.tar.gz
+destination: /restore/staging/
+
+---
+# List what's inside an archive before extracting
+operation: list
+archive: /backup/app.tar.xz
+
+---
+# Multiple source paths in one archive (zstd — fast and compact)
+operation: create
+archive: /backup/configs.tar.zst
+source: "/etc/nginx/ /etc/postgresql/"
+exclude: "*.pid"

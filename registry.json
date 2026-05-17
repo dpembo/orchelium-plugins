@@ -1,6 +1,6 @@
 {
   "registryVersion": "1",
-  "updated": "2026-05-16",
+  "updated": "2026-05-17",
   "source": "https://github.com/dpembo/orchelium-plugins",
   "plugins": [
     {
@@ -199,6 +199,17 @@
       "tags": ["wake-on-lan", "wol", "network", "power"],
       "official": true,
       "path": "wake-on-lan",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "bitwarden",
+      "label": "Bitwarden Export",
+      "description": "Export a Bitwarden organisation vault to a password-protected ZIP file. Authenticates via API key and supports CSV, JSON, and encrypted JSON formats. Uses 7-Zip (AES-256) when available, with a zip fallback.",
+      "version": "1.0.0",
+      "category": "backup",
+      "tags": ["bitwarden", "passwords", "export", "security", "vault"],
+      "official": true,
+      "path": "bitwarden",
       "minOrcheliumVersion": "1.0.0"
     }
   ]

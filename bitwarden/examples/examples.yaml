@@ -1,0 +1,44 @@
+examples:
+  - label: "Export org vault as CSV (cloud)"
+    description: "Export a Bitwarden organisation vault to an AES-256 encrypted ZIP in CSV format."
+    inputs:
+      organization_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      client_id: "organization.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      master_password: "{{ secret }}"
+      zip_password: "{{ secret }}"
+      format: "csv"
+      output_path: "/backup/bitwarden/vault-export.zip"
+
+  - label: "Export org vault as JSON"
+    description: "Full-fidelity JSON export including custom fields, to a timestamped path in /tmp."
+    inputs:
+      organization_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      client_id: "organization.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      master_password: "{{ secret }}"
+      zip_password: "{{ secret }}"
+      format: "json"
+
+  - label: "Export from self-hosted Vaultwarden"
+    description: "Export organisation vault from a self-hosted Vaultwarden instance."
+    inputs:
+      organization_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      client_id: "organization.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      master_password: "{{ secret }}"
+      zip_password: "{{ secret }}"
+      format: "csv"
+      server_url: "https://vaultwarden.internal.example.com"
+      output_path: "/backup/bitwarden/vault-export.zip"
+
+  - label: "Export encrypted JSON backup"
+    description: "Export as Bitwarden-encrypted JSON — safe to store without additional encryption, but keep ZIP password as extra protection."
+    inputs:
+      organization_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      client_id: "organization.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      master_password: "{{ secret }}"
+      zip_password: "{{ secret }}"
+      format: "encrypted_json"
+      output_path: "/backup/bitwarden/vault-encrypted.zip"

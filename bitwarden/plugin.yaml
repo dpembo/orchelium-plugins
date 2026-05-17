@@ -1,0 +1,93 @@
+name: bitwarden
+version: 1.0.0
+label: Bitwarden Export
+description: |
+  Export a Bitwarden organisation vault to a password-protected ZIP file.
+  Authenticates via the Bitwarden API key (client ID + client secret) and
+  unlocks the vault with the master password. The exported file is zipped
+  and encrypted before being written to the agent host.
+
+  Requires the Bitwarden CLI (bw) to be installed on the agent.
+inputs:
+  - name: organization_id
+    label: Organization ID
+    type: string
+    required: true
+    placeholder: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    description: |
+      The UUID of the Bitwarden organisation to export.
+      Find it in the Bitwarden web vault under Organisation → Settings.
+
+  - name: client_id
+    label: API Client ID
+    type: string
+    required: true
+    placeholder: "organization.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    description: |
+      The API client ID for machine authentication.
+      Generate it in Bitwarden web vault → Organisation → Settings → API Key.
+
+  - name: client_secret
+    label: API Client Secret
+    type: string
+    required: true
+    placeholder: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    description: |
+      The API client secret paired with the client ID above.
+
+  - name: master_password
+    label: Master Password
+    type: string
+    required: true
+    description: |
+      The master password used to unlock the vault and decrypt the export.
+      This is never written to disk or logged.
+
+  - name: zip_password
+    label: ZIP Encryption Password
+    type: string
+    required: true
+    description: |
+      Password used to encrypt the output ZIP file. Use a strong, unique
+      passphrase. AES-256 encryption is used if 7-Zip is available on the
+      agent; otherwise standard ZipCrypto is used (weaker — prefer 7z).
+
+  - name: format
+    label: Export Format
+    type: select
+    required: false
+    options:
+      - csv
+      - json
+      - encrypted_json
+    default: csv
+    description: |
+      csv — plaintext spreadsheet, widely compatible.
+      json — full plaintext JSON export.
+      encrypted_json — Bitwarden-encrypted JSON (requires master password
+      to decrypt; safe to store unzipped but less portable).
+
+  - name: output_path
+    label: Output ZIP Path
+    type: string
+    required: false
+    placeholder: "/backup/bitwarden-export.zip"
+    description: |
+      Full path for the output ZIP file on the agent host.
+      If omitted, a timestamped file is written to /tmp.
+
+  - name: server_url
+    label: Server URL
+    type: string
+    required: false
+    default: "https://vault.bitwarden.com"
+    placeholder: "https://vault.bitwarden.com"
+    description: |
+      Bitwarden server URL. Change this only if you run a self-hosted
+      Bitwarden or Vaultwarden instance.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+output:
+  format: auto

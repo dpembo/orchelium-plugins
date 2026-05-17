@@ -211,6 +211,17 @@
       "official": true,
       "path": "bitwarden",
       "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "file-prune",
+      "label": "File Prune",
+      "description": "Delete files matching a wildcard pattern that are older than a specified number of days. Ideal for enforcing retention policies on backup archives, log files, database dumps, and other time-stamped files.",
+      "version": "1.0.0",
+      "category": "system",
+      "tags": ["prune", "cleanup", "files", "retention", "maintenance"],
+      "official": true,
+      "path": "file-prune",
+      "minOrcheliumVersion": "1.0.0"
     }
   ]
 }

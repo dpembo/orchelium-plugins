@@ -1,0 +1,77 @@
+name: file-prune
+version: 1.0.0
+label: File Prune
+description: |
+  Delete files in a directory that match a wildcard pattern and are older than
+  a specified number of days. Uses find -mtime to locate and remove matching
+  files. Useful for pruning backup archives, log files, and any other
+  time-based file retention policies.
+
+category: system
+
+tags:
+  - prune
+  - cleanup
+  - files
+  - retention
+  - maintenance
+
+official: true
+
+inputs:
+  - name: directory
+    label: Directory
+    type: string
+    required: true
+    placeholder: "/mnt/backups/nightly"
+    description: Full path to the directory to prune. Must exist and be writable by the agent user.
+
+  - name: pattern
+    label: File Pattern (wildcard)
+    type: string
+    required: true
+    placeholder: "*.tar.gz"
+    description: |
+      Shell wildcard pattern to match files for deletion.
+      Examples:
+        *.tar.gz     — all gzip archives
+        backup-*     — files starting with "backup-"
+        *.log        — all log files
+        db_dump_*    — files starting with "db_dump_"
+
+  - name: age_days
+    label: Age (days)
+    type: number
+    required: true
+    default: 30
+    description: |
+      Delete files older than this many days (based on last-modified time).
+      A value of 7 deletes files not modified in the last 7 days.
+
+  - name: dry_run
+    label: Dry Run
+    type: boolean
+    required: false
+    default: false
+    description: |
+      When enabled, lists the files that would be deleted without actually
+      removing them. Use this to verify your pattern and age before running
+      for real.
+
+  - name: recursive
+    label: Recursive
+    type: boolean
+    required: false
+    default: false
+    description: |
+      When enabled, searches subdirectories as well as the top-level directory.
+      When disabled (default), only files directly in the specified directory
+      are matched (-maxdepth 1).
+
+outputs:
+  - name: deleted_count
+    label: Files Deleted
+    description: Number of files deleted (or matched in dry-run mode).
+  - name: success
+    label: Success
+    description: true if the operation completed without errors.

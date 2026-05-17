@@ -1,0 +1,45 @@
+examples:
+  - name: Prune nightly backup archives older than 30 days
+    description: Remove .tar.gz files from a backup directory that haven't been modified in 30 days.
+    inputs:
+      directory: /mnt/backups/nightly
+      pattern: "*.tar.gz"
+      age_days: 30
+      dry_run: false
+      recursive: false
+
+  - name: Dry-run — preview files to be deleted
+    description: List files that would be deleted without actually removing them.
+    inputs:
+      directory: /mnt/backups/nightly
+      pattern: "*.tar.gz"
+      age_days: 30
+      dry_run: true
+      recursive: false
+
+  - name: Prune old log files
+    description: Delete .log files in a log directory older than 7 days.
+    inputs:
+      directory: /var/log/myapp
+      pattern: "*.log"
+      age_days: 7
+      dry_run: false
+      recursive: false
+
+  - name: Prune database dumps older than 14 days (recursive)
+    description: Recursively clean up database dump files across subdirectories.
+    inputs:
+      directory: /mnt/backups/databases
+      pattern: "db_dump_*"
+      age_days: 14
+      dry_run: false
+      recursive: true
+
+  - name: Prune old zip archives with short retention
+    description: Keep only the last 3 days of zip archives.
+    inputs:
+      directory: /home/backup/exports
+      pattern: "*.zip"
+      age_days: 3
+      dry_run: false
+      recursive: false

@@ -75,3 +75,9 @@ outputs:
   - name: success
     label: Success
     description: true if the operation completed without errors.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+output:
+  format: auto

@@ -73,7 +73,7 @@
       "name": "proxmox-backup",
       "label": "Proxmox VM Backup",
       "description": "Run vzdump on a Proxmox host to back up one or more VMs or LXC containers. Supports all vzdump modes and storage targets.",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "category": "backup",
       "tags": ["proxmox", "vm", "backup", "vzdump"],
       "official": true,

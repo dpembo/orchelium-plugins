@@ -106,20 +106,19 @@ fi
 
 echo "[proxmox-backup] Running: vzdump ${VZDUMP_ARGS[*]}"
 
+
 START_TS=$(date +%s)
-LOG_FILE=$(mktemp)
 
-# Stream output live while also saving it for post-run parsing.
+# Stream output live to stdout only. The agent will capture and log this.
+VZDUMP_OUTPUT=""
 if command -v stdbuf >/dev/null 2>&1; then
-  stdbuf -oL -eL vzdump "${VZDUMP_ARGS[@]}" | tee "$LOG_FILE"
+  VZDUMP_OUTPUT=$(stdbuf -oL -eL vzdump "${VZDUMP_ARGS[@]}" 2>&1 | tee /dev/fd/1)
+  EXIT_CODE=${PIPESTATUS[0]}
 else
-  vzdump "${VZDUMP_ARGS[@]}" | tee "$LOG_FILE"
+  VZDUMP_OUTPUT=$(vzdump "${VZDUMP_ARGS[@]}" 2>&1 | tee /dev/fd/1)
+  EXIT_CODE=${PIPESTATUS[0]}
 fi
-EXIT_CODE=${PIPESTATUS[0]}
 DURATION=$(( $(date +%s) - START_TS ))
-
-VZDUMP_OUTPUT=$(cat "$LOG_FILE")
-rm -f "$LOG_FILE"
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[proxmox-backup] FAILED with exit code $EXIT_CODE"

@@ -23,6 +23,21 @@ parse_field() {
     <<< "$INPUT_JSON" 2>/dev/null || echo ""
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 CONTAINER=$(parse_field container)
 IMAGE=$(parse_field image)
@@ -99,8 +114,9 @@ case "$OPERATION" in
   start)
     read -ra CT_ARRAY <<< "$CONTAINER"
     echo "[docker] Running: docker start ${CT_ARRAY[*]}"
-    DOCKER_OUTPUT=$(docker start "${CT_ARRAY[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker start "${CT_ARRAY[@]}"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── STOP ───────────────────────────────────────────────────────────────────
@@ -110,8 +126,9 @@ case "$OPERATION" in
     [ -n "$STOP_TIMEOUT" ] && [ "$STOP_TIMEOUT" != "0" ] && STOP_ARGS+=("--time" "$STOP_TIMEOUT")
     STOP_ARGS+=("${CT_ARRAY[@]}")
     echo "[docker] Running: docker ${STOP_ARGS[*]}"
-    DOCKER_OUTPUT=$(docker "${STOP_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker "${STOP_ARGS[@]}"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── RESTART ────────────────────────────────────────────────────────────────
@@ -121,15 +138,17 @@ case "$OPERATION" in
     [ -n "$STOP_TIMEOUT" ] && [ "$STOP_TIMEOUT" != "0" ] && RESTART_ARGS+=("--time" "$STOP_TIMEOUT")
     RESTART_ARGS+=("${CT_ARRAY[@]}")
     echo "[docker] Running: docker ${RESTART_ARGS[*]}"
-    DOCKER_OUTPUT=$(docker "${RESTART_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker "${RESTART_ARGS[@]}"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── EXEC ───────────────────────────────────────────────────────────────────
   exec)
     echo "[docker] Running: docker exec ${CONTAINER} /bin/sh -c '${EXEC_COMMAND}'"
-    DOCKER_OUTPUT=$(docker exec "$CONTAINER" /bin/sh -c "$EXEC_COMMAND" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker exec "$CONTAINER" /bin/sh -c "$EXEC_COMMAND"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── RUN ────────────────────────────────────────────────────────────────────
@@ -170,23 +189,26 @@ case "$OPERATION" in
     fi
 
     echo "[docker] Running: docker ${RUN_ARGS[*]}"
-    DOCKER_OUTPUT=$(docker "${RUN_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+  run_and_capture docker "${RUN_ARGS[@]}"
+  DOCKER_OUTPUT=$CAPTURED_OUTPUT
+  EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── PULL ───────────────────────────────────────────────────────────────────
   pull)
     echo "[docker] Running: docker pull ${IMAGE}"
-    DOCKER_OUTPUT=$(docker pull "$IMAGE" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker pull "$IMAGE"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── RM ─────────────────────────────────────────────────────────────────────
   rm)
     read -ra CT_ARRAY <<< "$CONTAINER"
     echo "[docker] Running: docker rm ${CT_ARRAY[*]}"
-    DOCKER_OUTPUT=$(docker rm "${CT_ARRAY[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker rm "${CT_ARRAY[@]}"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── LOGS ───────────────────────────────────────────────────────────────────
@@ -195,8 +217,9 @@ case "$OPERATION" in
     [ -n "$LOGS_SINCE" ] && LOG_ARGS+=("--since" "$LOGS_SINCE")
     LOG_ARGS+=("$CONTAINER")
     echo "[docker] Running: docker ${LOG_ARGS[*]}"
-    DOCKER_OUTPUT=$(docker "${LOG_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker "${LOG_ARGS[@]}"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── PS ─────────────────────────────────────────────────────────────────────
@@ -204,32 +227,41 @@ case "$OPERATION" in
     PS_ARGS=("ps" "--format" "{{json .}}")
     [ "$PS_ALL" = "yes" ] && PS_ARGS+=("-a")
     echo "[docker] Running: docker ${PS_ARGS[*]}"
-    DOCKER_OUTPUT=$(docker "${PS_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker "${PS_ARGS[@]}"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── INSPECT ────────────────────────────────────────────────────────────────
   inspect)
     echo "[docker] Running: docker inspect ${CONTAINER}"
-    DOCKER_OUTPUT=$(docker inspect "$CONTAINER" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture docker inspect "$CONTAINER"
+    DOCKER_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── PRUNE ──────────────────────────────────────────────────────────────────
   prune)
     PRUNE_OUTPUT=""
     echo "[docker] Pruning stopped containers..."
-    PRUNE_OUTPUT+=$(docker container prune -f 2>&1)$'\n'
+    run_and_capture docker container prune -f
+    PRUNE_OUTPUT+="$CAPTURED_OUTPUT"$'\n'
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     echo "[docker] Pruning dangling images..."
-    PRUNE_OUTPUT+=$(docker image prune -f 2>&1)$'\n'
+    run_and_capture docker image prune -f
+    PRUNE_OUTPUT+="$CAPTURED_OUTPUT"$'\n'
+    [ "$EXIT_CODE" -eq 0 ] && EXIT_CODE=$CAPTURED_EXIT_CODE
     echo "[docker] Pruning unused networks..."
-    PRUNE_OUTPUT+=$(docker network prune -f 2>&1)$'\n'
+    run_and_capture docker network prune -f
+    PRUNE_OUTPUT+="$CAPTURED_OUTPUT"$'\n'
+    [ "$EXIT_CODE" -eq 0 ] && EXIT_CODE=$CAPTURED_EXIT_CODE
     if [ "$PRUNE_VOLUMES" = "yes" ]; then
       echo "[docker] Pruning unused volumes..."
-      PRUNE_OUTPUT+=$(docker volume prune -f 2>&1)$'\n'
+      run_and_capture docker volume prune -f
+      PRUNE_OUTPUT+="$CAPTURED_OUTPUT"$'\n'
+      [ "$EXIT_CODE" -eq 0 ] && EXIT_CODE=$CAPTURED_EXIT_CODE
     fi
     DOCKER_OUTPUT="$PRUNE_OUTPUT"
-    EXIT_CODE=$?
     ;;
 
   *)
@@ -240,8 +272,6 @@ case "$OPERATION" in
 esac
 
 DURATION=$(( $(date +%s) - START_TS ))
-
-echo "$DOCKER_OUTPUT"
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[docker] FAILED with exit code $EXIT_CODE"

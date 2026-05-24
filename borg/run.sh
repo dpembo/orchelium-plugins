@@ -23,6 +23,21 @@ parse_field() {
     <<< "$INPUT_JSON" 2>/dev/null || echo ""
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 REPO=$(parse_field repo)
 ARCHIVE_NAME=$(parse_field archive_name)
@@ -164,11 +179,11 @@ esac
 echo "[borg] Running: borg ${BORG_ARGS[*]}"
 
 START_TS=$(date +%s)
-BORG_OUTPUT=$(borg "${BORG_ARGS[@]}" 2>&1)
-EXIT_CODE=$?
+run_and_capture borg "${BORG_ARGS[@]}"
+EXIT_CODE=$CAPTURED_EXIT_CODE
 DURATION=$(( $(date +%s) - START_TS ))
 
-echo "$BORG_OUTPUT"
+BORG_OUTPUT=$CAPTURED_OUTPUT
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[borg] FAILED with exit code $EXIT_CODE"

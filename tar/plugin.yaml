@@ -1,5 +1,5 @@
 name: tar
-version: 1.0.0
+version: 1.0.1
 label: Tar Archive
 description: |
   Create, extract, or list tar archives on the agent host. Supports gzip,

@@ -23,6 +23,21 @@ parse_field() {
     <<< "$INPUT_JSON" 2>/dev/null || echo ""
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 DATASET=$(parse_field dataset)
 SNAPSHOT_NAME=$(parse_field snapshot_name)
@@ -74,8 +89,9 @@ case "$OPERATION" in
     [ -n "$EXTRA_FLAGS" ] && { read -ra EF <<< "$EXTRA_FLAGS"; ZFS_ARGS+=("${EF[@]}"); }
     ZFS_ARGS+=("$FULL_SNAP")
     echo "[zfs] Running: zfs ${ZFS_ARGS[*]}"
-    ZFS_OUTPUT=$(zfs "${ZFS_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture zfs "${ZFS_ARGS[@]}"
+    ZFS_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   destroy)
@@ -84,8 +100,9 @@ case "$OPERATION" in
     [ -n "$EXTRA_FLAGS" ] && { read -ra EF <<< "$EXTRA_FLAGS"; ZFS_ARGS+=("${EF[@]}"); }
     ZFS_ARGS+=("$FULL_SNAP")
     echo "[zfs] Running: zfs ${ZFS_ARGS[*]}"
-    ZFS_OUTPUT=$(zfs "${ZFS_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture zfs "${ZFS_ARGS[@]}"
+    ZFS_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   list)
@@ -94,8 +111,9 @@ case "$OPERATION" in
     [ -n "$EXTRA_FLAGS" ] && { read -ra EF <<< "$EXTRA_FLAGS"; ZFS_ARGS+=("${EF[@]}"); }
     ZFS_ARGS+=("$DATASET")
     echo "[zfs] Running: zfs ${ZFS_ARGS[*]}"
-    ZFS_OUTPUT=$(zfs "${ZFS_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture zfs "${ZFS_ARGS[@]}"
+    ZFS_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   send)
@@ -116,14 +134,30 @@ case "$OPERATION" in
       # Remote SSH receive
       RECV_DATASET="${SEND_DATASET_REMOTE:-$DATASET}"
       echo "[zfs] Running: zfs ${SEND_ARGS[*]} | ssh ${SEND_TARGET} zfs receive -F ${RECV_DATASET}"
-      ZFS_OUTPUT=$(zfs "${SEND_ARGS[@]}" 2>&1 | ssh "$SEND_TARGET" "zfs receive -F '$RECV_DATASET'" 2>&1)
-      EXIT_CODE=${PIPESTATUS[0]}
-      [ "$EXIT_CODE" -eq 0 ] && EXIT_CODE=${PIPESTATUS[1]}
+      LOG_FILE=$(mktemp)
+      if command -v stdbuf >/dev/null 2>&1; then
+        stdbuf -oL -eL zfs "${SEND_ARGS[@]}" | ssh "$SEND_TARGET" "zfs receive -F '$RECV_DATASET'" | tee "$LOG_FILE"
+      else
+        zfs "${SEND_ARGS[@]}" | ssh "$SEND_TARGET" "zfs receive -F '$RECV_DATASET'" | tee "$LOG_FILE"
+      fi
+      SEND_EXIT=${PIPESTATUS[0]}
+      RECV_EXIT=${PIPESTATUS[1]}
+      EXIT_CODE=$SEND_EXIT
+      [ "$EXIT_CODE" -eq 0 ] && EXIT_CODE=$RECV_EXIT
+      ZFS_OUTPUT=$(cat "$LOG_FILE")
+      rm -f "$LOG_FILE"
     else
       # Local file
       echo "[zfs] Running: zfs ${SEND_ARGS[*]} > ${SEND_TARGET}"
-      ZFS_OUTPUT=$(zfs "${SEND_ARGS[@]}" > "$SEND_TARGET" 2>&1)
+      LOG_FILE=$(mktemp)
+      if command -v stdbuf >/dev/null 2>&1; then
+        stdbuf -oL -eL zfs "${SEND_ARGS[@]}" > "$SEND_TARGET" 2> >(tee "$LOG_FILE")
+      else
+        zfs "${SEND_ARGS[@]}" > "$SEND_TARGET" 2> >(tee "$LOG_FILE")
+      fi
       EXIT_CODE=$?
+      ZFS_OUTPUT=$(cat "$LOG_FILE")
+      rm -f "$LOG_FILE"
     fi
     ;;
 
@@ -133,8 +167,9 @@ case "$OPERATION" in
     [ -n "$EXTRA_FLAGS" ] && { read -ra EF <<< "$EXTRA_FLAGS"; ZFS_ARGS+=("${EF[@]}"); }
     ZFS_ARGS+=("$FULL_SNAP")
     echo "[zfs] Running: zfs ${ZFS_ARGS[*]}"
-    ZFS_OUTPUT=$(zfs "${ZFS_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture zfs "${ZFS_ARGS[@]}"
+    ZFS_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   clone)
@@ -146,8 +181,9 @@ case "$OPERATION" in
     [ -n "$EXTRA_FLAGS" ] && { read -ra EF <<< "$EXTRA_FLAGS"; ZFS_ARGS+=("${EF[@]}"); }
     ZFS_ARGS+=("$FULL_SNAP" "$CLONE_TARGET")
     echo "[zfs] Running: zfs ${ZFS_ARGS[*]}"
-    ZFS_OUTPUT=$(zfs "${ZFS_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture zfs "${ZFS_ARGS[@]}"
+    ZFS_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   *)
@@ -158,8 +194,6 @@ case "$OPERATION" in
 esac
 
 DURATION=$(( $(date +%s) - START_TS ))
-
-echo "$ZFS_OUTPUT"
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[zfs] FAILED with exit code $EXIT_CODE"

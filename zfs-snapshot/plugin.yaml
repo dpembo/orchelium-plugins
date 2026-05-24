@@ -1,5 +1,5 @@
 name: zfs-snapshot
-version: 1.0.0
+version: 1.0.1
 label: ZFS Snapshot
 description: |
   Create, destroy, list, send/receive, rollback, or clone ZFS snapshots.

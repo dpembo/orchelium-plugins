@@ -24,6 +24,21 @@ parse_bool() {
     || echo "false"
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 SERVICE=$(parse_field service)
 USER_MODE=$(parse_bool user_mode)
@@ -49,10 +64,9 @@ SYSTEMCTL_ARGS=()
 
 echo "[systemd] Running: systemctl ${SYSTEMCTL_ARGS[*]:-} $OPERATION $SERVICE"
 
-OUTPUT=$(systemctl "${SYSTEMCTL_ARGS[@]:-}" "$OPERATION" "$SERVICE" 2>&1)
-EXIT_CODE=$?
-
-echo "$OUTPUT"
+run_and_capture systemctl "${SYSTEMCTL_ARGS[@]:-}" "$OPERATION" "$SERVICE"
+OUTPUT=$CAPTURED_OUTPUT
+EXIT_CODE=$CAPTURED_EXIT_CODE
 
 # For status/is-active, capture the active state
 ACTIVE_STATE=""

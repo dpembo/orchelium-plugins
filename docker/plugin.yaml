@@ -1,5 +1,5 @@
 name: docker
-version: 1.0.0
+version: 1.0.1
 label: Docker
 description: |
   Run common Docker operations from an Orchelium workflow node — start, stop,

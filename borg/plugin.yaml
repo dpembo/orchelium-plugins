@@ -1,5 +1,5 @@
 name: borg
-version: 1.0.0
+version: 1.0.1
 label: Borg Backup
 description: |
   Run BorgBackup (borg) operations — create, prune, check, list, info, or

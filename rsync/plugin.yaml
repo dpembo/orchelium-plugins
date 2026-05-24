@@ -1,5 +1,5 @@
 name: rsync
-version: 1.0.0
+version: 1.0.1
 label: Rsync
 description: |
   Synchronise or verify files between directories or hosts using rsync.

@@ -23,6 +23,21 @@ parse_field() {
     <<< "$INPUT_JSON" 2>/dev/null || echo ""
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 CTID=$(parse_field ctid)
 EXEC_COMMAND=$(parse_field exec_command)
@@ -88,8 +103,9 @@ case "$OPERATION" in
   # ── START ──────────────────────────────────────────────────────────────────
   start)
     echo "[lxc-pct] Running: pct start ${CTID}"
-    PCT_OUTPUT=$(pct start "$CTID" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct start "$CTID"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── STOP ───────────────────────────────────────────────────────────────────
@@ -98,8 +114,9 @@ case "$OPERATION" in
     [ -n "$STOP_TIMEOUT" ] && [ "$STOP_TIMEOUT" != "0" ] && STOP_ARGS+=("--timeout" "$STOP_TIMEOUT")
     [ "$FORCE_STOP" = "yes" ] && STOP_ARGS+=("--skiplock")
     echo "[lxc-pct] Running: pct ${STOP_ARGS[*]}"
-    PCT_OUTPUT=$(pct "${STOP_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct "${STOP_ARGS[@]}"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── RESTART ────────────────────────────────────────────────────────────────
@@ -107,23 +124,26 @@ case "$OPERATION" in
     RESTART_ARGS=("restart" "$CTID")
     [ -n "$STOP_TIMEOUT" ] && [ "$STOP_TIMEOUT" != "0" ] && RESTART_ARGS+=("--timeout" "$STOP_TIMEOUT")
     echo "[lxc-pct] Running: pct ${RESTART_ARGS[*]}"
-    PCT_OUTPUT=$(pct "${RESTART_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct "${RESTART_ARGS[@]}"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── EXEC ───────────────────────────────────────────────────────────────────
   exec)
     echo "[lxc-pct] Running: pct exec ${CTID} -- ${EXEC_COMMAND}"
     # pct exec passes everything after -- directly; wrap in sh -c for pipes/redirects
-    PCT_OUTPUT=$(pct exec "$CTID" -- /bin/sh -c "$EXEC_COMMAND" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct exec "$CTID" -- /bin/sh -c "$EXEC_COMMAND"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── STATUS ─────────────────────────────────────────────────────────────────
   status)
     echo "[lxc-pct] Running: pct status ${CTID}"
-    PCT_OUTPUT=$(pct status "$CTID" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct status "$CTID"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     # Also grab config for hostname and other details
     PCT_CONFIG=$(pct config "$CTID" 2>/dev/null || echo "")
     ;;
@@ -133,22 +153,25 @@ case "$OPERATION" in
     SNAP_ARGS=("snapshot" "$CTID" "$SNAPSHOT_NAME")
     [ -n "$SNAPSHOT_DESC" ] && SNAP_ARGS+=("--description" "$SNAPSHOT_DESC")
     echo "[lxc-pct] Running: pct ${SNAP_ARGS[*]}"
-    PCT_OUTPUT=$(pct "${SNAP_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct "${SNAP_ARGS[@]}"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── ROLLBACK ───────────────────────────────────────────────────────────────
   rollback)
     echo "[lxc-pct] Running: pct rollback ${CTID} ${SNAPSHOT_NAME}"
-    PCT_OUTPUT=$(pct rollback "$CTID" "$SNAPSHOT_NAME" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct rollback "$CTID" "$SNAPSHOT_NAME"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── DESTROY-SNAPSHOT ───────────────────────────────────────────────────────
   destroy-snapshot)
     echo "[lxc-pct] Running: pct delsnapshot ${CTID} ${SNAPSHOT_NAME}"
-    PCT_OUTPUT=$(pct delsnapshot "$CTID" "$SNAPSHOT_NAME" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct delsnapshot "$CTID" "$SNAPSHOT_NAME"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── CLONE ──────────────────────────────────────────────────────────────────
@@ -157,15 +180,17 @@ case "$OPERATION" in
     [ -n "$CLONE_HOSTNAME" ] && CLONE_ARGS+=("--hostname" "$CLONE_HOSTNAME")
     [ "$CLONE_FULL" = "yes" ] && CLONE_ARGS+=("--full")
     echo "[lxc-pct] Running: pct ${CLONE_ARGS[*]}"
-    PCT_OUTPUT=$(pct "${CLONE_ARGS[@]}" 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct "${CLONE_ARGS[@]}"
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   # ── LIST ───────────────────────────────────────────────────────────────────
   list)
     echo "[lxc-pct] Running: pct list"
-    PCT_OUTPUT=$(pct list 2>&1)
-    EXIT_CODE=$?
+    run_and_capture pct list
+    PCT_OUTPUT=$CAPTURED_OUTPUT
+    EXIT_CODE=$CAPTURED_EXIT_CODE
     ;;
 
   *)
@@ -176,8 +201,6 @@ case "$OPERATION" in
 esac
 
 DURATION=$(( $(date +%s) - START_TS ))
-
-echo "$PCT_OUTPUT"
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[lxc-pct] FAILED with exit code $EXIT_CODE"

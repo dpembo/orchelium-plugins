@@ -23,6 +23,21 @@ parse_field() {
     <<< "$INPUT_JSON" 2>/dev/null || echo ""
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 REPO=$(parse_field repo)
 PASSWORD_FILE=$(parse_field password_file)
@@ -133,11 +148,11 @@ fi
 echo "[restic] Running: restic ${RESTIC_ARGS[*]}"
 
 START_TS=$(date +%s)
-RESTIC_OUTPUT=$(restic "${RESTIC_ARGS[@]}" 2>&1)
-EXIT_CODE=$?
+run_and_capture restic "${RESTIC_ARGS[@]}"
+EXIT_CODE=$CAPTURED_EXIT_CODE
 DURATION=$(( $(date +%s) - START_TS ))
 
-echo "$RESTIC_OUTPUT"
+RESTIC_OUTPUT=$CAPTURED_OUTPUT
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[restic] FAILED with exit code $EXIT_CODE"

@@ -1,5 +1,5 @@
 name: systemd
-version: 1.0.0
+version: 1.0.1
 label: Systemd Service
 description: |
   Manage systemd services on the agent host. Start, stop, restart, reload,

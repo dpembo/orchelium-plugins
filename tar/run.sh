@@ -18,6 +18,21 @@ parse_field() {
     || echo ""
 }
 
+run_and_capture() {
+  local log_file
+  log_file=$(mktemp)
+
+  if command -v stdbuf >/dev/null 2>&1; then
+    stdbuf -oL -eL "$@" | tee "$log_file"
+  else
+    "$@" | tee "$log_file"
+  fi
+
+  CAPTURED_EXIT_CODE=${PIPESTATUS[0]}
+  CAPTURED_OUTPUT=$(cat "$log_file")
+  rm -f "$log_file"
+}
+
 OPERATION=$(parse_field operation)
 ARCHIVE=$(parse_field archive)
 SOURCE=$(parse_field source)
@@ -119,12 +134,12 @@ esac
 
 echo "[tar] Running: tar ${TAR_ARGS[*]}"
 
-OUTPUT=$(tar "${TAR_ARGS[@]}" 2>&1)
-EXIT_CODE=$?
+run_and_capture tar "${TAR_ARGS[@]}"
+EXIT_CODE=$CAPTURED_EXIT_CODE
 END_TS=$(date +%s)
 DURATION=$((END_TS - START_TS))
 
-echo "$OUTPUT"
+OUTPUT=$CAPTURED_OUTPUT
 
 if [ "$EXIT_CODE" -ne 0 ]; then
   echo "[tar] FAILED with exit code $EXIT_CODE"

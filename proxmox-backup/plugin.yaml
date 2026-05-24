@@ -1,5 +1,5 @@
 name: proxmox-backup
-version: 1.0.2
+version: 1.0.3
 label: Proxmox VM Backup
 description: |
   Run vzdump on a Proxmox host to back up one or more VMs or LXC containers.

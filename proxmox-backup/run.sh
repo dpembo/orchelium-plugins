@@ -107,15 +107,15 @@ fi
 echo "[proxmox-backup] Running: vzdump ${VZDUMP_ARGS[*]}"
 
 
+
 START_TS=$(date +%s)
 
-# Stream output live to stdout only. The agent will capture and log this.
-VZDUMP_OUTPUT=""
+# Run vzdump directly, streaming all output to stdout (agent will capture it)
 if command -v stdbuf >/dev/null 2>&1; then
-  VZDUMP_OUTPUT=$(stdbuf -oL -eL vzdump "${VZDUMP_ARGS[@]}" 2>&1 | tee /dev/fd/1)
+  stdbuf -oL -eL vzdump "${VZDUMP_ARGS[@]}"
   EXIT_CODE=${PIPESTATUS[0]}
 else
-  VZDUMP_OUTPUT=$(vzdump "${VZDUMP_ARGS[@]}" 2>&1 | tee /dev/fd/1)
+  vzdump "${VZDUMP_ARGS[@]}"
   EXIT_CODE=${PIPESTATUS[0]}
 fi
 DURATION=$(( $(date +%s) - START_TS ))

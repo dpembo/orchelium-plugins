@@ -51,10 +51,8 @@ fi
 # ── Build curl options ──────────────────────────────────────────────────────────
 
 CURL_OPTS=(-s)
-if [ "$VERIFY_SSL" = "yes" ]; then
-  CURL_OPTS+=(-k)  # Note: -k means verify=False, use --cacert for proper verification
-else
-  CURL_OPTS+=(--insecure)
+if [ "$VERIFY_SSL" != "yes" ]; then
+  CURL_OPTS+=(-k)  # -k disables SSL verification for self-signed certs
 fi
 
 # ── Helper functions ────────────────────────────────────────────────────────────
@@ -246,7 +244,7 @@ PYEOF
   
   diagnostics-firewall-log)
     # Get firewall logs
-    RESULT=$(opn_api_get "/diagnostics/firewall/log?limit=${DIAGNOSTICS_LINES}")
+    RESULT=$(opn_api_post "/diagnostics/firewall/log?limit=${DIAGNOSTICS_LINES}")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
       echo "$RESULT" | json_to_csv
     else
@@ -256,7 +254,7 @@ PYEOF
   
   diagnostics-system-info)
     # Get system information (hostname, version, uptime, etc.)
-    RESULT=$(opn_api_get "/diagnostics/system/system_information")
+    RESULT=$(opn_api_post "/diagnostics/system/system_information")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
       echo "$RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print('Property,Value'); [print(f\"{k},{v}\") for k,v in data.items()]"
     else
@@ -266,7 +264,8 @@ PYEOF
   
   diagnostics-system-resources)
     # Get system resources (CPU, memory, disk, swap)
-    RESULT=$(opn_api_get "/diagnostics/system/system_resources")
+    # Note: Some diagnostics endpoints work better as POST even if documented as GET
+    RESULT=$(opn_api_post "/diagnostics/system/system_resources")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
       echo "$RESULT" | json_to_csv
     else
@@ -276,7 +275,7 @@ PYEOF
   
   diagnostics-interface-stats)
     # Get network interface statistics
-    RESULT=$(opn_api_get "/diagnostics/interface/get_interface_statistics")
+    RESULT=$(opn_api_post "/diagnostics/interface/get_interface_statistics")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
       echo "$RESULT" | json_to_csv
     else

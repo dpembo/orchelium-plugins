@@ -1,0 +1,107 @@
+name: opnsense
+version: 1.0.0
+label: OPNsense Firewall
+description: |
+  Query and manage OPNsense firewall configurations and diagnostics.
+  Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics.
+  Uses OPNsense REST API with API key authentication.
+
+inputs:
+  - name: host
+    label: Host
+    type: string
+    required: true
+    placeholder: "192.168.1.1"
+    description: OPNsense host IP address or hostname.
+
+  - name: api_key
+    label: API Key
+    type: string
+    required: true
+    placeholder: "your-api-key-here"
+    description: OPNsense API key (generate from System → API → Keys).
+
+  - name: api_secret
+    label: API Secret
+    type: string
+    required: true
+    placeholder: "your-api-secret-here"
+    description: OPNsense API secret (paired with API key).
+
+  - name: verify_ssl
+    label: Verify SSL Certificate
+    type: select
+    required: false
+    default: "no"
+    options:
+      - "yes"
+      - "no"
+    description: Verify SSL certificate when connecting to OPNsense.
+
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - backup-get
+      - backup-download
+      - firmware-status
+      - firmware-get
+      - firewall-rules-list
+      - firewall-aliases-list
+      - firewall-nat-list
+      - firewall-stats
+      - diagnostics-firewall-log
+      - diagnostics-system-info
+      - diagnostics-system-resources
+      - diagnostics-interface-stats
+      - system-status
+    default: system-status
+    description: |
+      backup-get          — List available backups.
+      backup-download     — Download a backup (returns filename).
+      firmware-status     — Get firmware version and status.
+      firmware-get        — Get firmware configuration.
+      firewall-rules-list — List firewall filter rules.
+      firewall-aliases-list — List firewall aliases.
+      firewall-nat-list   — List NAT rules (destination, source, 1:1).
+      firewall-stats      — Get firewall statistics.
+      diagnostics-firewall-log — Retrieve firewall logs.
+      diagnostics-system-info — Get system information (hostname, version, etc.).
+      diagnostics-system-resources — Get system resources (memory, CPU, disk, swap).
+      diagnostics-interface-stats — Get network interface statistics.
+      system-status       — Get system status (reboot pending, up time, etc.).
+
+  - name: backup_id
+    label: Backup ID
+    type: string
+    required: false
+    description: |
+      (backup-download) Backup ID to download. If empty, downloads most recent.
+      Example: backup-2026-06-12-103045
+
+  - name: firewall_filter
+    label: Firewall Filter
+    type: string
+    required: false
+    description: |
+      (firewall-rules-list) Filter by description or UUID (optional).
+
+  - name: diagnostics_lines
+    label: Log Lines
+    type: number
+    required: false
+    default: 100
+    description: |
+      (diagnostics-firewall-log) Number of firewall log lines to retrieve.
+
+  - name: output_format
+    label: Output Format
+    type: select
+    required: false
+    default: "json"
+    options:
+      - json
+      - csv
+      - raw
+    description: Format for returned data (JSON, CSV, or raw).

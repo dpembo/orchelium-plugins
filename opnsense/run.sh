@@ -69,24 +69,15 @@ opn_api_get() {
 
 opn_api_post() {
   local endpoint="$1"
-  local data="${2:-}"
+  local data="${2:-{}}"
   local url="https://${HOST}/api${endpoint}"
   
-  if [ -n "$data" ]; then
-    curl "${CURL_OPTS[@]}" \
-      -X POST \
-      -u "$API_KEY:$API_SECRET" \
-      -H "Content-Type: application/json" \
-      -d "$data" \
-      "$url"
-  else
-    curl "${CURL_OPTS[@]}" \
-      -X POST \
-      -u "$API_KEY:$API_SECRET" \
-      -H "Content-Type: application/json" \
-      -d '' \
-      "$url"
-  fi
+  curl "${CURL_OPTS[@]}" \
+    -X POST \
+    -u "$API_KEY:$API_SECRET" \
+    -H "Content-Type: application/json" \
+    -d "$data" \
+    "$url"
 }
 
 # Format output as CSV

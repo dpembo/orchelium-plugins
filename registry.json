@@ -62,7 +62,7 @@
       "name": "opnsense",
       "label": "OPNsense Firewall",
       "description": "Query and manage OPNsense firewall configurations, backups, and diagnostics. Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics via the OPNsense REST API.",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "category": "networking",
       "tags": ["opnsense", "firewall", "backup", "diagnostics", "api"],
       "official": true,

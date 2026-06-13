@@ -1,6 +1,6 @@
 {
   "registryVersion": "1",
-  "updated": "2026-06-12",
+  "updated": "2026-06-13",
   "source": "https://github.com/dpembo/orchelium-plugins",
   "plugins": [
     {
@@ -62,11 +62,22 @@
       "name": "opnsense",
       "label": "OPNsense Firewall",
       "description": "Query and manage OPNsense firewall configurations, backups, and diagnostics. Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics via the OPNsense REST API.",
-      "version": "1.0.2",
+      "version": "1.0.1",
       "category": "networking",
       "tags": ["opnsense", "firewall", "backup", "diagnostics", "api"],
       "official": true,
       "path": "opnsense",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
+      "name": "paperless-ngx",
+      "label": "Paperless-ngx Backup",
+      "description": "Backup and export Paperless-ngx document library via Docker. Manage maintenance mode and perform timestamped, compressed exports.",
+      "version": "1.0.0",
+      "category": "backup",
+      "tags": ["paperless", "documents", "backup", "docker", "export"],
+      "official": true,
+      "path": "paperless-ngx",
       "minOrcheliumVersion": "1.0.0"
     },
     {

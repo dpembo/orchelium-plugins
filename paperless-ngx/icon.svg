@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Stack of papers / documents -->
+  <rect x="8" y="6" width="20" height="26" rx="1" fill="#F5E6D3" stroke="#D4A574" stroke-width="1.5"/>
+  <rect x="10" y="8" width="20" height="26" rx="1" fill="#FFEFD5" stroke="#D4A574" stroke-width="1.5"/>
+  <rect x="12" y="10" width="20" height="26" rx="1" fill="#FFF8E7" stroke="#D4A574" stroke-width="1.5"/>
+  
+  <!-- Lines representing text on document -->
+  <line x1="16" y1="16" x2="28" y2="16" stroke="#8B7355" stroke-width="0.8" opacity="0.6"/>
+  <line x1="16" y1="20" x2="26" y2="20" stroke="#8B7355" stroke-width="0.8" opacity="0.6"/>
+  <line x1="16" y1="24" x2="28" y2="24" stroke="#8B7355" stroke-width="0.8" opacity="0.6"/>
+  <line x1="16" y1="28" x2="24" y2="28" stroke="#8B7355" stroke-width="0.8" opacity="0.6"/>
+  
+  <!-- Archive/box symbol -->
+  <rect x="28" y="18" width="14" height="14" rx="1" fill="none" stroke="#E67E22" stroke-width="1.5"/>
+  <line x1="28" y1="22" x2="42" y2="22" stroke="#E67E22" stroke-width="1"/>
+  
+  <!-- Checkmark inside box (backup success) -->
+  <path d="M32 24 L35 27 L40 22" fill="none" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Container dots (Docker reference) -->
+  <circle cx="10" cy="39" r="1.5" fill="#2496ED" opacity="0.8"/>
+  <circle cx="16" cy="39" r="1.5" fill="#2496ED" opacity="0.8"/>
+  <circle cx="22" cy="39" r="1.5" fill="#2496ED" opacity="0.8"/>
+  
+  <!-- Label -->
+  <text x="24" y="47" text-anchor="middle" font-family="monospace" font-size="7" font-weight="bold" fill="#D4A574">paperless</text>
+</svg>

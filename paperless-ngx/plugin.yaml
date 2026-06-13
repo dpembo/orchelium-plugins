@@ -1,0 +1,89 @@
+name: paperless-ngx
+version: 1.0.0
+label: Paperless-ngx Backup
+description: |
+  Backup and export Paperless-ngx document library via Docker.
+  Manage maintenance mode, export documents to timestamped directories, and compress backups.
+  The Orchelium agent must have Docker access to the Paperless-ngx container host.
+
+inputs:
+  - name: container
+    label: Container Name / ID
+    type: string
+    required: true
+    placeholder: "paperless  or  a3f2b1c0d4e5"
+    description: Paperless-ngx container name or ID.
+
+  - name: operation
+    label: Operation
+    type: select
+    required: true
+    options:
+      - maintenance-enable
+      - maintenance-disable
+      - export
+    default: export
+    description: |
+      maintenance-enable  — Enable maintenance mode in Paperless.
+      maintenance-disable — Disable maintenance mode in Paperless.
+      export              — Export documents and compress the backup.
+
+  - name: target_path
+    label: Target Path
+    type: string
+    required: false
+    placeholder: "/backups/paperless  or  /mnt/nas/backups"
+    description: |
+      (export) Directory where the export and compressed backup will be stored.
+      A timestamped subdirectory will be created inside this path.
+      Required for export operation.
+
+  - name: compression_format
+    label: Compression Format
+    type: select
+    required: false
+    default: "tar.gz"
+    options:
+      - tar.gz
+      - zip
+    description: |
+      (export) Archive format for the compressed backup.
+      tar.gz provides better compression; zip provides better compatibility.
+
+  - name: exclude_thumbnails
+    label: Exclude Thumbnails
+    type: boolean
+    required: false
+    default: false
+    description: |
+      (export) Skip exporting document thumbnails to reduce backup size.
+      Thumbnails will be regenerated automatically on import.
+
+  - name: compression_level
+    label: Compression Level
+    type: select
+    required: false
+    default: "6"
+    options:
+      - "1"
+      - "6"
+      - "9"
+    description: |
+      (export) Compression level (1=fast, 6=balanced, 9=maximum).
+      Only applies to tar.gz format.
+
+  - name: keep_uncompressed
+    label: Keep Uncompressed Files
+    type: boolean
+    required: false
+    default: false
+    description: |
+      (export) Keep the uncompressed export directory after creating archive.
+      Default is to delete uncompressed files, leaving only the compressed backup.
+
+command: ./run.sh
+args:
+  - "{{inputs_json}}"
+
+output:
+  format: auto

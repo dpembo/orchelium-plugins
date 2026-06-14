@@ -1,5 +1,5 @@
 name: tar
-version: 1.0.1
+version: 1.0.2
 label: Tar Archive
 description: |
   Create, extract, or list tar archives on the agent host. Supports gzip,
@@ -34,6 +34,8 @@ inputs:
     type: string
     required: false
     placeholder: "/var/data/ /etc/app.conf"
+    visibleWhen:
+      operation: [create]
     description: |
       Space-separated list of files or directories to include. Required for
       the 'create' operation. Ignored for 'extract' and 'list'.
@@ -43,6 +45,8 @@ inputs:
     type: string
     required: false
     placeholder: "/restore/"
+    visibleWhen:
+      operation: [extract]
     description: |
       Directory to extract into. Used only for 'extract'. If omitted, files
       are extracted into the current working directory.
@@ -51,6 +55,8 @@ inputs:
     label: Compression
     type: select
     required: false
+    visibleWhen:
+      operation: [create]
     options:
       - auto
       - none
@@ -69,6 +75,8 @@ inputs:
     type: string
     required: false
     placeholder: "*.log *.tmp .cache"
+    visibleWhen:
+      operation: [create]
     description: |
       Space-separated glob patterns to exclude during 'create'.
       e.g. '*.log *.tmp' — each becomes a separate --exclude flag.

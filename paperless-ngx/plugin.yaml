@@ -1,5 +1,5 @@
 name: paperless-ngx
-version: 1.0.0
+version: 1.0.1
 label: Paperless-ngx Backup
 description: |
   Backup and export Paperless-ngx document library via Docker.
@@ -33,6 +33,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/paperless  or  /mnt/nas/backups"
+    visibleWhen:
+      operation: [export]
     description: |
       (export) Directory where the export and compressed backup will be stored.
       A timestamped subdirectory will be created inside this path.
@@ -43,6 +45,8 @@ inputs:
     type: select
     required: false
     default: "tar.gz"
+    visibleWhen:
+      operation: [export]
     options:
       - tar.gz
       - zip
@@ -55,6 +59,8 @@ inputs:
     type: boolean
     required: false
     default: false
+    visibleWhen:
+      operation: [export]
     description: |
       (export) Skip exporting document thumbnails to reduce backup size.
       Thumbnails will be regenerated automatically on import.
@@ -64,6 +70,8 @@ inputs:
     type: select
     required: false
     default: "6"
+    visibleWhen:
+      operation: [export]
     options:
       - "1"
       - "6"
@@ -77,6 +85,8 @@ inputs:
     type: boolean
     required: false
     default: false
+    visibleWhen:
+      operation: [export]
     description: |
       (export) Keep the uncompressed export directory after creating archive.
       Default is to delete uncompressed files, leaving only the compressed backup.

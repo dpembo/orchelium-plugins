@@ -1,5 +1,5 @@
 name: borg
-version: 1.0.1
+version: 1.0.2
 label: Borg Backup
 description: |
   Run BorgBackup (borg) operations — create, prune, check, list, info, or
@@ -40,6 +40,8 @@ inputs:
     required: false
     placeholder: "{hostname}-{now:%Y-%m-%dT%H:%M:%S}"
     default: "{hostname}-{now:%Y-%m-%dT%H:%M:%S}"
+    visibleWhen:
+      operation: [create]
     description: |
       Name for the new archive. Borg placeholders like {hostname} and
       {now:%Y-%m-%dT%H:%M:%S} are expanded by borg. Only used for create.
@@ -49,6 +51,8 @@ inputs:
     type: string
     required: false
     placeholder: "/home/dave /var/www /etc"
+    visibleWhen:
+      operation: [create]
     description: |
       Space-separated list of paths to include in the archive.
       Required for the create operation.
@@ -66,6 +70,8 @@ inputs:
     label: Compression
     type: select
     required: false
+    visibleWhen:
+      operation: [create]
     options:
       - lz4
       - zstd
@@ -87,6 +93,8 @@ inputs:
     type: string
     required: false
     placeholder: "--keep-daily 7 --keep-weekly 4 --keep-monthly 6"
+    visibleWhen:
+      operation: [prune]
     description: |
       Retention flags passed to borg prune. Only used for prune operation.
       Add --save-space to also run a compact step.
@@ -96,6 +104,8 @@ inputs:
     type: string
     required: false
     placeholder: "latest  or  myhost-2026-05-15T12:00:00"
+    visibleWhen:
+      operation: [list, info, check]
     description: |
       Archive name or 'latest' for info/check on a specific archive.
       Leave empty to target the whole repository.

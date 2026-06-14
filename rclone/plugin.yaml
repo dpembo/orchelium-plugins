@@ -1,5 +1,5 @@
 name: rclone
-version: 1.0.1
+version: 1.0.2
 label: Rclone
 description: |
   Sync, copy, move, or check files between any rclone-supported storage
@@ -44,6 +44,8 @@ inputs:
     type: string
     required: false
     placeholder: "s3backup:mybucket/data  or  /mnt/backup"
+    visibleWhen:
+      operation: [sync, copy, move, check]
     description: |
       Destination path. Required for sync, copy, move, and check operations.
 
@@ -106,6 +108,8 @@ inputs:
     label: Use Checksum Comparison
     type: select
     required: false
+    visibleWhen:
+      operation: [check]
     options:
       - "no"
       - "yes"

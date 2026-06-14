@@ -1,5 +1,5 @@
 name: docker
-version: 1.0.1
+version: 1.0.2
 label: Docker
 description: |
   Run common Docker operations from an Orchelium workflow node — start, stop,
@@ -42,6 +42,8 @@ inputs:
     type: string
     required: false
     placeholder: "my-app  or  a3f2b1c0d4e5"
+    visibleWhen:
+      operation: [start, stop, restart, exec, rm, logs, inspect]
     description: |
       Target container name or ID. Required for start, stop, restart, exec,
       rm, logs, and inspect. Accepts a space-separated list for start/stop/restart/rm.
@@ -51,6 +53,8 @@ inputs:
     type: string
     required: false
     placeholder: "nginx:latest  or  ghcr.io/myorg/myapp:1.2.3"
+    visibleWhen:
+      operation: [run, pull]
     description: |
       Image name and tag. Required for run and pull operations.
 
@@ -59,6 +63,8 @@ inputs:
     type: string
     required: false
     placeholder: "/bin/sh -c 'pg_dump mydb > /backup/dump.sql'"
+    visibleWhen:
+      operation: [exec]
     description: |
       Command to run inside the container. Required for exec operation.
       The whole string is passed via /bin/sh -c to support pipes and redirects.
@@ -68,6 +74,8 @@ inputs:
     type: string
     required: false
     placeholder: "backup --output /data/backup.tar.gz"
+    visibleWhen:
+      operation: [run]
     description: |
       Arguments passed to the container entrypoint for the run operation.
       Leave empty to use the image default CMD.
@@ -77,6 +85,8 @@ inputs:
     type: string
     required: false
     placeholder: "/mnt/backup:/backup  /etc/config:/config:ro"
+    visibleWhen:
+      operation: [run]
     description: |
       Space-separated volume mount specs in host:container[:options] format.
       Each entry is passed as a separate -v flag. Only used for run.
@@ -86,6 +96,8 @@ inputs:
     type: string
     required: false
     placeholder: "DB_HOST=localhost DB_PORT=5432"
+    visibleWhen:
+      operation: [run]
     description: |
       Space-separated KEY=VALUE pairs. Each is passed as a separate -e flag.
       Only used for run.
@@ -95,6 +107,8 @@ inputs:
     type: string
     required: false
     placeholder: "myapp_network"
+    visibleWhen:
+      operation: [run]
     description: Docker network to connect the container to. Only used for run.
 
   - name: run_extra_flags
@@ -102,6 +116,8 @@ inputs:
     type: string
     required: false
     placeholder: "--memory 512m --cpus 1"
+    visibleWhen:
+      operation: [run]
     description: |
       Additional flags inserted before the image name in docker run.
       Only used for run.
@@ -111,6 +127,8 @@ inputs:
     type: number
     required: false
     placeholder: "10"
+    visibleWhen:
+      operation: [stop, restart]
     description: |
       Seconds to wait for a graceful stop before SIGKILL (--time). Used by
       stop and restart. Defaults to Docker's built-in default (10s).
@@ -121,6 +139,8 @@ inputs:
     required: false
     placeholder: "100"
     default: "100"
+    visibleWhen:
+      operation: [logs]
     description: Number of log lines to return from the tail of the container log.
 
   - name: logs_since
@@ -128,6 +148,8 @@ inputs:
     type: string
     required: false
     placeholder: "1h  or  2026-05-15T00:00:00"
+    visibleWhen:
+      operation: [logs]
     description: |
       Return logs since this relative duration or timestamp. Examples: 10m, 2h,
       2026-05-15T08:00:00. Only used for logs.
@@ -140,6 +162,8 @@ inputs:
       - "no"
       - "yes"
     default: "no"
+    visibleWhen:
+      operation: [ps]
     description: |
       Include stopped containers in ps output (-a). Default shows only running.
 
@@ -151,6 +175,8 @@ inputs:
       - "no"
       - "yes"
     default: "no"
+    visibleWhen:
+      operation: [prune]
     description: Include unused volumes in the prune operation.
 
   - name: docker_host

@@ -1,5 +1,5 @@
 name: mount
-version: 1.0.0
+version: 1.0.1
 label: Mount / Unmount
 description: |
   Mount or unmount filesystems on the agent — NFS, CIFS/SMB, ext4/xfs/btrfs
@@ -27,6 +27,8 @@ inputs:
     label: Mount Type
     type: select
     required: false
+    visibleWhen:
+      operation: [mount]
     options:
       - auto
       - nfs
@@ -50,6 +52,8 @@ inputs:
     type: string
     required: false
     placeholder: "192.168.1.10:/export/data  or  //server/share  or  /dev/sdb1  or  /path/to/image.img"
+    visibleWhen:
+      operation: [mount]
     description: |
       Device, network share, or image file to mount. Not required for
       unmount or status operations.
@@ -66,6 +70,8 @@ inputs:
     type: string
     required: false
     placeholder: "ro,noatime  or  username=user,password=pass,uid=1000"
+    visibleWhen:
+      operation: [mount]
     description: |
       Comma-separated mount options passed to -o. For CIFS include
       username and password here or use a credentials file.
@@ -75,6 +81,8 @@ inputs:
     type: string
     required: false
     placeholder: "/etc/samba/credentials"
+    visibleWhen:
+      operation: [mount]
     description: |
       Path to a credentials file (credentials=...) for CIFS/SMB mounts.
       File format: username=user\npassword=pass\ndomain=DOMAIN
@@ -84,6 +92,9 @@ inputs:
     type: string
     required: false
     placeholder: "backup-crypt"
+    visibleWhen:
+      operation: [mount]
+      mount_type: [luks]
     description: |
       Name for the decrypted device under /dev/mapper/. Required when
       mount_type is luks. The mapped device is mounted at the target path.
@@ -93,6 +104,9 @@ inputs:
     type: string
     required: false
     placeholder: "/etc/luks/backup.key"
+    visibleWhen:
+      operation: [mount]
+      mount_type: [luks]
     description: |
       Path to a LUKS key file on the agent. Leave empty to use the
       LUKS_PASSPHRASE environment variable.
@@ -101,6 +115,8 @@ inputs:
     label: Create Mount Point if Missing
     type: select
     required: false
+    visibleWhen:
+      operation: [mount, remount]
     options:
       - "yes"
       - "no"
@@ -111,6 +127,8 @@ inputs:
     label: Lazy Unmount (-l)
     type: select
     required: false
+    visibleWhen:
+      operation: [unmount]
     options:
       - "no"
       - "yes"
@@ -123,6 +141,8 @@ inputs:
     label: Force Unmount (-f)
     type: select
     required: false
+    visibleWhen:
+      operation: [unmount]
     options:
       - "no"
       - "yes"

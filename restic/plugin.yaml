@@ -1,5 +1,5 @@
 name: restic
-version: 1.0.1
+version: 1.0.2
 label: Restic Backup
 description: |
   Run a Restic backup, forget, or check operation against any supported
@@ -46,6 +46,8 @@ inputs:
     type: string
     required: false
     placeholder: "/home/dave/data /var/www"
+    visibleWhen:
+      operation: [backup]
     description: |
       Space-separated list of paths to include in the backup.
       Required for the backup operation. Ignored for other operations.
@@ -69,6 +71,8 @@ inputs:
     type: string
     required: false
     placeholder: "--keep-daily 7 --keep-weekly 4 --keep-monthly 12"
+    visibleWhen:
+      operation: [forget]
     description: |
       Restic forget flags. Only used when operation is forget.
       Add --prune to also remove unreferenced data in the same step.
@@ -79,6 +83,8 @@ inputs:
     required: false
     placeholder: "latest"
     default: "latest"
+    visibleWhen:
+      operation: [restore]
     description: Snapshot ID or 'latest'. Only used for the restore operation.
 
   - name: restore_target
@@ -86,6 +92,8 @@ inputs:
     type: string
     required: false
     placeholder: "/tmp/restore"
+    visibleWhen:
+      operation: [restore]
     description: Directory to restore files into. Only used for the restore operation.
 
   - name: extra_flags

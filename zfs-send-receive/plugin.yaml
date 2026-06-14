@@ -1,5 +1,5 @@
 name: zfs-send-receive
-version: 1.0.0
+version: 1.0.1
 label: ZFS Send / Receive
 description: |
   Replicate ZFS datasets via zfs send | zfs receive. Supports full and
@@ -64,6 +64,8 @@ inputs:
     type: string
     required: false
     placeholder: "user@backuphost  or  user@192.168.1.10"
+    visibleWhen:
+      target_type: [ssh]
     description: SSH destination. Only used when Target Type is ssh.
 
   - name: target_dataset
@@ -80,6 +82,8 @@ inputs:
     type: string
     required: false
     placeholder: "/mnt/external/data.zfs"
+    visibleWhen:
+      target_type: [file]
     description: |
       Full path to write the stream file. Only used when Target Type is file.
 
@@ -88,6 +92,8 @@ inputs:
     type: string
     required: false
     placeholder: "/root/.ssh/id_ed25519"
+    visibleWhen:
+      target_type: [ssh]
     description: |
       Path to an SSH private key on the agent. Leave empty to use the default
       SSH key or agent forwarding.
@@ -97,6 +103,8 @@ inputs:
     type: number
     required: false
     placeholder: "22"
+    visibleWhen:
+      target_type: [ssh]
     description: SSH port on the target host. Defaults to 22.
 
   - name: raw

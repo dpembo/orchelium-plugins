@@ -1,5 +1,5 @@
 name: mysql
-version: 1.0.0
+version: 1.0.1
 label: MySQL / MariaDB
 description: |
   Backup, restore and manage MySQL / MariaDB databases.
@@ -70,6 +70,8 @@ inputs:
     type: string
     required: false
     placeholder: "mydb"
+    visibleWhen:
+      operation: [dump, restore, query, create-database, drop-database, check]
     description: |
       Target database name.
       Use "ALL" with the dump operation to dump every database (--all-databases).
@@ -80,6 +82,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/mydb_%Y-%m-%d.sql.gz"
+    visibleWhen:
+      operation: [dump]
     description: |
       Output file path for the dump operation.
       Supports strftime placeholders (%Y, %m, %d, %H, %M, %S).
@@ -90,6 +94,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/mydb_2025-01-01.sql.gz"
+    visibleWhen:
+      operation: [restore]
     description: Path to the SQL dump file to restore from. Supports .gz files.
 
   - name: query
@@ -97,6 +103,8 @@ inputs:
     type: string
     required: false
     placeholder: "SELECT COUNT(*) FROM users;"
+    visibleWhen:
+      operation: [query]
     description: SQL statement to execute (query operation only).
 
   - name: extra_flags

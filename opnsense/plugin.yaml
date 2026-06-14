@@ -1,5 +1,5 @@
 name: opnsense
-version: 1.0.2
+version: 1.0.3
 label: OPNsense Firewall
 description: |
   Query and manage OPNsense firewall configurations and diagnostics.
@@ -76,6 +76,8 @@ inputs:
     label: Backup ID
     type: string
     required: false
+    visibleWhen:
+      operation: [backup-download]
     description: |
       (backup-download) Backup ID to download. If empty, downloads most recent.
       Example: backup-2026-06-12-103045
@@ -84,6 +86,8 @@ inputs:
     label: Firewall Filter
     type: string
     required: false
+    visibleWhen:
+      operation: [firewall-rules-list]
     description: |
       (firewall-rules-list) Filter by description or UUID (optional).
 
@@ -92,6 +96,8 @@ inputs:
     type: number
     required: false
     default: 100
+    visibleWhen:
+      operation: [diagnostics-firewall-log]
     description: |
       (diagnostics-firewall-log) Number of firewall log lines to retrieve.
 

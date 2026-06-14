@@ -1,5 +1,5 @@
 name: zfs-snapshot
-version: 1.0.1
+version: 1.0.2
 label: ZFS Snapshot
 description: |
   Create, destroy, list, send/receive, rollback, or clone ZFS snapshots.
@@ -62,6 +62,8 @@ inputs:
     type: string
     required: false
     placeholder: "auto-2026-05-14T02:00:00"
+    visibleWhen:
+      operation: [send]
     description: |
       Name of an existing snapshot to use as the incremental base (-i flag).
       Leave empty for a full send.
@@ -71,6 +73,8 @@ inputs:
     type: string
     required: false
     placeholder: "user@remotehost  or  /mnt/backup/stream.zfs"
+    visibleWhen:
+      operation: [send]
     description: |
       For send operation. If it looks like user@host the stream is piped via
       SSH to zfs receive on the remote. Otherwise treated as a local file path.
@@ -80,6 +84,8 @@ inputs:
     type: string
     required: false
     placeholder: "backup/home"
+    visibleWhen:
+      operation: [send]
     description: |
       The destination dataset on the remote host for zfs receive.
       Only used when Send Target is an SSH address.
@@ -89,6 +95,8 @@ inputs:
     type: string
     required: false
     placeholder: "pool/home-restore"
+    visibleWhen:
+      operation: [clone]
     description: New dataset name for the clone. Required for clone operation.
 
   - name: extra_flags

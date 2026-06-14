@@ -1,5 +1,5 @@
 name: s3
-version: 1.0.0
+version: 1.0.1
 label: S3 Object Storage
 description: |
   Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi,
@@ -71,6 +71,8 @@ inputs:
   - name: storage_class
     label: Storage Class (optional)
     type: select
+    visibleWhen:
+      operation: [sync, upload]
     options:
       - ""
       - STANDARD
@@ -86,6 +88,8 @@ inputs:
   - name: delete
     label: Delete Extra Files (sync only)
     type: select
+    visibleWhen:
+      operation: [sync]
     options:
       - "no"
       - "yes"
@@ -105,18 +109,24 @@ inputs:
     label: Exclude Patterns (optional)
     type: string
     placeholder: "*.tmp .DS_Store"
+    visibleWhen:
+      operation: [sync, upload, download]
     description: "Space-separated glob patterns to exclude"
 
   - name: include
     label: Include Patterns (optional)
     type: string
     placeholder: "*.sql.gz *.dump"
+    visibleWhen:
+      operation: [sync, upload, download]
     description: "Space-separated glob patterns to include (applied after excludes)"
 
   - name: presign_expires
     label: Presign Expiry (seconds)
     type: number
     placeholder: "3600"
+    visibleWhen:
+      operation: [presign]
     description: "URL validity period for the presign operation (default: 3600)"
 
   - name: extra_flags

@@ -1,5 +1,5 @@
 name: truenas
-version: 1.0.0
+version: 1.0.1
 label: TrueNAS
 description: |
   Manage TrueNAS CORE and SCALE via the REST API v2.0.
@@ -50,6 +50,8 @@ inputs:
     label: Dataset
     type: string
     placeholder: "pool/data  or  tank/vm-storage"
+    visibleWhen:
+      operation: [snapshot, delete-snapshot, list-snapshots]
     description: "ZFS dataset path (for snapshot / list-snapshots)"
 
   - name: snapshot_name
@@ -57,6 +59,8 @@ inputs:
     type: string
     placeholder: "auto-%Y-%m-%dT%H:%M:%S"
     default: "auto-%Y-%m-%dT%H:%M:%S"
+    visibleWhen:
+      operation: [snapshot]
     description: "Snapshot name. Supports strftime placeholders (%Y, %m, %d, etc.)"
 
   - name: recursive
@@ -66,18 +70,24 @@ inputs:
       - "no"
       - "yes"
     default: "no"
+    visibleWhen:
+      operation: [snapshot]
     description: "Include all child datasets in the snapshot"
 
   - name: task_name
     label: Task Name
     type: string
     placeholder: "Daily Offsite Replication"
+    visibleWhen:
+      operation: [replication-run, cloudsync-run]
     description: "Name of the replication or cloud sync task to run (matched case-insensitively)"
 
   - name: pool
     label: Pool Name (scrub)
     type: string
     placeholder: "tank"
+    visibleWhen:
+      operation: [scrub]
     description: "ZFS pool name for the scrub operation"
 
   - name: timeout

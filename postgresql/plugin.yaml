@@ -1,5 +1,5 @@
 name: postgresql
-version: 1.0.0
+version: 1.0.1
 label: PostgreSQL
 description: |
   Backup, restore and manage PostgreSQL databases.
@@ -72,6 +72,8 @@ inputs:
     type: string
     required: false
     placeholder: "mydb"
+    visibleWhen:
+      operation: [dump, restore, query, create-database, drop-database]
     description: |
       Target database name.
       Required for: dump, restore, query, create-database, drop-database.
@@ -82,6 +84,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/mydb_%Y-%m-%d.dump"
+    visibleWhen:
+      operation: [dump, dump-all]
     description: |
       Output file path for dump / dump-all operations.
       Supports strftime placeholders (%Y, %m, %d, %H, %M, %S).
@@ -93,6 +97,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/mydb_2025-01-01.dump"
+    visibleWhen:
+      operation: [restore]
     description: |
       Path to the dump file to restore.
       .sql / .sql.gz → piped through psql.
@@ -102,6 +108,8 @@ inputs:
     label: Dump Format
     type: select
     required: false
+    visibleWhen:
+      operation: [dump, dump-all]
     options:
       - custom
       - plain
@@ -119,6 +127,8 @@ inputs:
     type: string
     required: false
     placeholder: "SELECT COUNT(*) FROM users;"
+    visibleWhen:
+      operation: [query]
     description: SQL statement to execute (query operation only).
 
   - name: extra_flags

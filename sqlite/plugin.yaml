@@ -1,5 +1,5 @@
 name: sqlite
-version: 1.0.0
+version: 1.0.1
 label: SQLite
 description: |
   Backup, restore and manage SQLite database files.
@@ -44,6 +44,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/app_%Y-%m-%d.sql.gz"
+    visibleWhen:
+      operation: [dump, backup]
     description: |
       Output file path for dump and backup operations.
       Supports strftime placeholders (%Y, %m, %d, %H, %M, %S).
@@ -54,6 +56,8 @@ inputs:
     type: string
     required: false
     placeholder: "/backups/app_2025-01-01.sql.gz"
+    visibleWhen:
+      operation: [restore]
     description: Path to the SQL dump file to restore from. Supports .gz files.
 
   - name: query
@@ -61,6 +65,8 @@ inputs:
     type: string
     required: false
     placeholder: "SELECT COUNT(*) FROM users;"
+    visibleWhen:
+      operation: [query]
     description: SQL statement to execute (query operation only).
 
   - name: extra_flags

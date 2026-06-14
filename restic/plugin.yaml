@@ -1,5 +1,5 @@
 name: restic
-version: 1.0.2
+version: 2.0.0
 label: Restic Backup
 description: |
   Run a Restic backup, forget, or check operation against any supported

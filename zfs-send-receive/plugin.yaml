@@ -1,5 +1,5 @@
 name: zfs-send-receive
-version: 1.0.1
+version: 2.0.0
 label: ZFS Send / Receive
 description: |
   Replicate ZFS datasets via zfs send | zfs receive. Supports full and

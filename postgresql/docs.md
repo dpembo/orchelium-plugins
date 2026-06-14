@@ -4,42 +4,20 @@ Run backups, restores, queries, and database management tasks against a PostgreS
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+Optional for all operations:
+
+| Parameter | Description |
 |-----------|-------------|
-| `dump` | Export a single database using `pg_dump` |
-| `dump-all` | Export all databases using `pg_dumpall` |
-| `restore` | Restore a database from a dump file using `pg_restore` or `psql` |
-| `query` | Run an arbitrary SQL statement using `psql` |
-| `list-databases` | List all databases on the server |
-| `create-database` | Create a new database |
-| `drop-database` | Drop (delete) a database |
-| `vacuum` | Run `VACUUM ANALYZE` on a database to reclaim space and update statistics |
+| **Host** | PostgreSQL server hostname or IP (default: `localhost`) |
+| **Port** | PostgreSQL server port (default: `5432`) |
+| **Username** | PostgreSQL username (default: `postgres`) |
+| **Password File (.pgpass)** | Path to a `.pgpass` file for authentication |
 
----
+### .pgpass File Format
 
-## Parameters
-
-| Parameter | Required | Default | Description |
-|-----------|----------|---------|-------------|
-| **Operation** | Yes | `dump` | Operation to perform |
-| **Host** | No | `localhost` | PostgreSQL server hostname or IP |
-| **Port** | No | `5432` | PostgreSQL server port |
-| **Username** | No | `postgres` | PostgreSQL username |
-| **Password File (.pgpass)** | No | — | Path to a `.pgpass` file for authentication |
-| **Database** | Most operations | — | Target database name |
-| **Dump File Path** | dump, dump-all | Destination file; supports `%Y-%m-%d` date placeholders |
-| **Restore File Path** | restore | Path to the dump file to restore |
-| **Dump Format** | No | `custom` | `custom`, `plain`, `directory`, `tar` |
-| **SQL Query** | query | SQL statement to execute |
-| **Extra Flags** | No | — | Any additional flags |
-
----
-
-## .pgpass File Format
-
-The `.pgpass` file avoids passwords on the command line. Each line follows the format:
+The `.pgpass` file avoids passwords on the command line. Each line follows:
 
 ```
 hostname:port:database:username:password
@@ -55,7 +33,202 @@ localhost:5432:*:backupuser:s3cr3t
 chmod 600 /root/.pgpass
 ```
 
-Then set **Password File (.pgpass)** to `/root/.pgpass`.
+---
+
+## dump — Export a Single Database
+
+Export a single database using `pg_dump`.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Database** | Yes | Database name to dump |
+| **Dump File Path** | Yes | Destination file; supports `%Y-%m-%d` date placeholders |
+| **Dump Format** | No | `custom`, `plain`, `directory`, `tar` (default: `custom`) |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+| **Extra Flags** | No | Additional `pg_dump` flags |
+
+### Example
+
+```
+Operation:       dump
+Database:        myapp
+Dump File:       /backups/myapp_%Y-%m-%d.dump
+Dump Format:     custom
+Extra Flags:     --no-owner --no-acl
+```
+
+---
+
+## dump-all — Export All Databases
+
+Export all databases with roles and tablespaces using `pg_dumpall`.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Dump File Path** | Yes | Destination file; supports `%Y-%m-%d` date placeholders |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+| **Extra Flags** | No | Additional flags |
+
+### Example
+
+```
+Operation:       dump-all
+Dump File:       /backups/all-databases_%Y-%m-%d.sql.gz
+```
+
+---
+
+## restore — Restore a Database from a Dump File
+
+Restore a database from a dump file using `pg_restore` or `psql`.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Database** | Yes | Target database name |
+| **Restore File Path** | Yes | Path to the dump file |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+| **Extra Flags** | No | Additional `pg_restore`/`psql` flags |
+
+### Example
+
+```
+Operation:        restore
+Database:         myapp
+Restore File:     /backups/myapp_2026-05-15.dump
+Extra Flags:      --no-owner --clean
+```
+
+The plugin auto-detects `.sql` files and uses `psql` instead of `pg_restore`.
+
+---
+
+## query — Run an Arbitrary SQL Statement
+
+Execute an arbitrary SQL statement using `psql`.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Database** | Yes | Target database |
+| **SQL Query** | Yes | SQL statement to execute |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+
+### Example
+
+```
+Operation:        query
+Database:         myapp
+Query:            SELECT schemaname, tablename, n_live_tup FROM pg_stat_user_tables ORDER BY n_live_tup DESC LIMIT 10;
+```
+
+---
+
+## list-databases — List All Databases
+
+List all databases on the server.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+
+### Example
+
+```
+Operation:        list-databases
+```
+
+---
+
+## create-database — Create a New Database
+
+Create a new database.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Database** | Yes | Name of the new database |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+
+### Example
+
+```
+Operation:        create-database
+Database:         myapp_staging
+```
+
+---
+
+## drop-database — Drop (Delete) a Database
+
+Drop (delete) an existing database. **Warning: This is irreversible!**
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Database** | Yes | Name of the database to drop |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+
+### Example
+
+```
+Operation:        drop-database
+Database:         old_staging
+```
+
+---
+
+## vacuum — Run VACUUM ANALYZE
+
+Run `VACUUM ANALYZE` on a database to reclaim space and update statistics.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Database** | Yes | Target database |
+| **Host** | No | PostgreSQL server hostname |
+| **Port** | No | PostgreSQL server port |
+| **Username** | No | PostgreSQL username |
+| **Password File (.pgpass)** | No | Path to `.pgpass` file |
+
+### Example
+
+```
+Operation:        vacuum
+Database:         myapp
+```
 
 ---
 
@@ -70,73 +243,18 @@ Then set **Password File (.pgpass)** to `/root/.pgpass`.
 
 ---
 
-## Usage Examples
+## Dump File Date Placeholders
 
-### Dump a database (custom format)
+The **Dump File Path** field supports `date` strftime placeholders:
 
-```
-Operation:       dump
-Host:            localhost
-Username:        postgres
-Password File:   /root/.pgpass
-Database:        myapp
-Dump File:       /backups/myapp_%Y-%m-%d.dump
-Extra Flags:     --no-owner --no-acl
-```
+| Placeholder | Output |
+|-------------|--------|
+| `%Y` | 4-digit year |
+| `%m` | Month (01–12) |
+| `%d` | Day of month |
+| `%H%M%S` | Time |
 
-### Dump all databases
-
-```
-Operation:       dump-all
-Password File:   /root/.pgpass
-Dump File:       /backups/all-databases_%Y-%m-%d.sql.gz
-```
-
-### Restore from a custom-format dump
-
-```
-Operation:        restore
-Password File:    /root/.pgpass
-Database:         myapp
-Restore File:     /backups/myapp_2026-05-15.dump
-Extra Flags:      --no-owner --clean
-```
-
-### Restore from a plain SQL dump
-
-```
-Operation:        restore
-Password File:    /root/.pgpass
-Database:         myapp
-Restore File:     /backups/myapp_2026-05-15.sql
-```
-
-The plugin auto-detects `.sql` files and uses `psql` instead of `pg_restore`.
-
-### Run a verification query
-
-```
-Operation:        query
-Password File:    /root/.pgpass
-Database:         myapp
-Query:            SELECT schemaname, tablename, n_live_tup FROM pg_stat_user_tables ORDER BY n_live_tup DESC LIMIT 10;
-```
-
-### VACUUM ANALYZE
-
-```
-Operation:        vacuum
-Password File:    /root/.pgpass
-Database:         myapp
-```
-
-### Create a new database
-
-```
-Operation:          create-database
-Password File:      /root/.pgpass
-Database:           myapp_staging
-```
+Example: `/backups/myapp_%Y-%m-%d_%H%M%S.dump`
 
 ---
 

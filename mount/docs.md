@@ -4,32 +4,112 @@ Mount or unmount filesystems on the agent host. Supports NFS, CIFS/SMB, standard
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+All operations require:
+
+| Parameter | Description |
 |-----------|-------------|
-| `mount` | Mount a filesystem at the specified target |
-| `unmount` | Unmount a mounted filesystem |
-| `remount` | Unmount then re-mount (useful to apply new options) |
-| `status` | Check if a path is currently mounted |
+| **Mount Point** | Directory where the filesystem should be attached |
 
 ---
 
-## Parameters
+## mount — Mount a Filesystem
 
-| Parameter | Required | Operations | Description |
-|-----------|----------|------------|-------------|
-| **Operation** | Yes | — | Operation to perform |
-| **Mount Type** | mount, remount | Type of filesystem; `auto` for kernel detection |
-| **Source** | mount, remount | Device, network path, or image file to mount |
-| **Mount Point** | Yes | All | Directory where the filesystem should be attached |
-| **Mount Options** | No | mount, remount | Comma-separated options, e.g. `ro,noatime` |
-| **CIFS Credentials File** | No | mount (cifs) | Path to a credentials file (`username=...` / `password=...`) |
-| **LUKS Mapper Name** | mount (luks) | Device mapper name, e.g. `backup-crypt` |
-| **LUKS Key File** | mount (luks) | Path to the LUKS unlock key file |
-| **Create Mount Point if Missing** | No | `yes` | Create the target directory if it does not exist |
-| **Lazy Unmount (-l)** | No | `no` | Detach filesystem from namespace even if busy |
-| **Force Unmount (-f)** | No | `no` | Force unmount (use with NFS when server is unreachable) |
+Mount a filesystem at the specified target.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Mount Point** | Yes | Directory where the filesystem will be attached |
+| **Mount Type** | No | Type of filesystem; `auto` for kernel detection |
+| **Source** | Yes | Device, network path, or image file to mount |
+| **Mount Options** | No | Comma-separated options, e.g. `ro,noatime` |
+| **CIFS Credentials File** | No | Path to a credentials file (for CIFS only) |
+| **LUKS Mapper Name** | No | Device mapper name, e.g. `backup-crypt` (for LUKS only) |
+| **LUKS Key File** | No | Path to the LUKS unlock key file (for LUKS only) |
+| **Create Mount Point if Missing** | No | Create the target directory if it does not exist |
+
+### Example
+
+```
+Operation:     mount
+Mount Type:    nfs
+Source:        192.168.1.20:/exports/backups
+Mount Point:   /mnt/backup
+Options:       rw,noatime,rsize=131072,wsize=131072
+```
+
+---
+
+## unmount — Unmount a Mounted Filesystem
+
+Unmount a mounted filesystem.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Mount Point** | Yes | Directory to unmount |
+| **Lazy Unmount (-l)** | No | Detach filesystem even if busy |
+| **Force Unmount (-f)** | No | Force unmount (use with unreachable NFS servers) |
+
+### Example
+
+```
+Operation:      unmount
+Mount Point:    /mnt/backup
+Lazy Unmount:   no
+Force Unmount:  no
+```
+
+---
+
+## remount — Unmount and Re-mount with New Options
+
+Unmount then re-mount (useful to apply new options).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Mount Point** | Yes | Directory to remount |
+| **Mount Type** | No | Type of filesystem |
+| **Source** | Yes | Device, network path, or image file |
+| **Mount Options** | No | Comma-separated options |
+| **CIFS Credentials File** | No | Path to a credentials file (for CIFS only) |
+| **LUKS Mapper Name** | No | Device mapper name (for LUKS only) |
+| **LUKS Key File** | No | Path to the LUKS unlock key file (for LUKS only) |
+
+### Example
+
+```
+Operation:      remount
+Mount Type:     auto
+Source:         /dev/sdb1
+Mount Point:    /mnt/backup
+Options:        ro,noatime
+```
+
+---
+
+## status — Check if a Path is Currently Mounted
+
+Check whether a path is currently mounted.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Mount Point** | Yes | Directory to check |
+
+### Example
+
+```
+Operation:      status
+Mount Point:    /mnt/backup
+```
 
 ---
 
@@ -48,78 +128,12 @@ Mount or unmount filesystems on the agent host. Supports NFS, CIFS/SMB, standard
 
 ---
 
-## Usage Examples
+### CIFS Credentials File Format
 
-### Mount an NFS share
-
-```
-Operation:     mount
-Mount Type:    nfs
-Source:        192.168.1.20:/exports/backups
-Mount Point:   /mnt/backup
-Options:       rw,noatime,rsize=131072,wsize=131072
-```
-
-### Mount a CIFS/SMB share
-
-```
-Operation:           mount
-Mount Type:          cifs
-Source:              //192.168.1.10/backups
-Mount Point:         /mnt/nas-backup
-Credentials File:    /etc/samba/backup-credentials
-Options:             uid=1000,gid=1000,file_mode=0660,dir_mode=0770
-```
-
-CIFS credentials file format:
 ```
 username=backupuser
 password=s3cr3t
 domain=WORKGROUP
-```
-
-### Mount a LUKS encrypted disk
-
-```
-Operation:        mount
-Mount Type:       luks
-Source:           /dev/sdb1
-Mount Point:      /mnt/secure-backup
-LUKS Name:        backup-crypt
-LUKS Key File:    /etc/luks/backup.key
-```
-
-### Mount a disk image
-
-```
-Operation:      mount
-Mount Type:     loop
-Source:         /var/images/backup.img
-Mount Point:    /mnt/backup-img
-```
-
-### Unmount
-
-```
-Operation:      unmount
-Mount Point:    /mnt/backup
-```
-
-### Check if mounted
-
-```
-Operation:      status
-Mount Point:    /mnt/backup
-```
-
-### Remount read-only
-
-```
-Operation:      remount
-Mount Type:     auto
-Source:         /dev/sdb1
-Mount Point:    /mnt/backup
-Options:        ro,noatime
 ```
 
 ---

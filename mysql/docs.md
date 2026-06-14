@@ -4,40 +4,27 @@ Run backups, restores, queries, and database management tasks against a MySQL or
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+All operations require:
+
+| Parameter | Description |
 |-----------|-------------|
-| `dump` | Export a database to a `.sql` or `.sql.gz` file using `mysqldump` |
-| `restore` | Restore a database from a dump file |
-| `query` | Run an arbitrary SQL statement |
-| `list-databases` | List all databases on the server |
-| `create-database` | Create a new database |
-| `drop-database` | Drop (delete) a database |
-| `check` | Check and repair all tables in a database using `mysqlcheck` |
+| **Options / Password File** | Path to a MySQL options file containing credentials |
+
+Optional for all operations:
+
+| Parameter | Description |
+|-----------|-------------|
+| **Host** | MySQL server hostname or IP (default: `localhost`) |
+| **Port** | MySQL server port (default: `3306`) |
+| **Username** | MySQL username (default: `root`) |
 
 ---
 
-## Parameters
+### Options / Password File Format
 
-| Parameter | Required | Default | Description |
-|-----------|----------|---------|-------------|
-| **Operation** | Yes | `dump` | Operation to perform |
-| **Host** | No | `localhost` | MySQL server hostname or IP |
-| **Port** | No | `3306` | MySQL server port |
-| **Username** | No | `root` | MySQL username |
-| **Options / Password File** | Yes | — | Path to a MySQL options file containing credentials |
-| **Database** | dump, restore, query, create/drop, check | Target database name |
-| **Dump File Path** | dump | Destination file; supports `%Y-%m-%d` date placeholders |
-| **Restore File Path** | restore | Path to the dump file to restore (`.sql` or `.sql.gz`) |
-| **SQL Query** | query | The SQL statement to execute |
-| **Extra Flags** | No | — | Any additional `mysqldump`/`mysql` flags |
-
----
-
-## Options / Password File
-
-Never put your password on the command line. Create a MySQL options file and protect it:
+Never put credentials on the command line. Create a MySQL options file and protect it:
 
 ```ini
 [client]
@@ -49,37 +36,53 @@ password = s3cr3t
 chmod 600 /etc/mysql/backup.cnf
 ```
 
-Then set **Options / Password File** to `/etc/mysql/backup.cnf`.
-
 ---
 
-## Usage Examples
+## dump — Export a Database to a SQL File
 
-### Dump a database (compressed)
+Export a database to a `.sql` or `.sql.gz` file using `mysqldump`.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Database** | Yes | Database name to dump |
+| **Dump File Path** | Yes | Destination file; supports `%Y-%m-%d` date placeholders |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+| **Extra Flags** | No | Additional `mysqldump` flags |
+
+### Example
 
 ```
 Operation:        dump
-Host:             localhost
-Username:         backupuser
 Options File:     /etc/mysql/backup.cnf
 Database:         wordpress
 Dump File:        /backups/wordpress_%Y-%m-%d.sql.gz
 Extra Flags:      --single-transaction --routines --events
 ```
 
-The `%Y-%m-%d` placeholder is expanded to today's date automatically.
+---
 
-### Dump all databases
+## restore — Restore a Database from a Dump File
 
-```
-Operation:        dump
-Options File:     /etc/mysql/backup.cnf
-Database:         (leave blank for all databases)
-Dump File:        /backups/all-databases_%Y-%m-%d.sql.gz
-Extra Flags:      --all-databases --single-transaction
-```
+Restore a database from a dump file (`.sql` or `.sql.gz`).
 
-### Restore from a dump
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Database** | Yes | Target database name |
+| **Restore File Path** | Yes | Path to the dump file (`.sql` or `.sql.gz`) |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+| **Extra Flags** | No | Additional flags |
+
+### Example
 
 ```
 Operation:        restore
@@ -88,7 +91,24 @@ Database:         wordpress
 Restore File:     /backups/wordpress_2026-05-15.sql.gz
 ```
 
-### Run a health-check query
+---
+
+## query — Execute an Arbitrary SQL Statement
+
+Run an arbitrary SQL statement and return results.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Database** | Yes | Target database |
+| **SQL Query** | Yes | The SQL statement to execute |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+
+### Example
 
 ```
 Operation:        query
@@ -97,15 +117,94 @@ Database:         wordpress
 Query:            SELECT COUNT(*) AS total_posts FROM wp_posts;
 ```
 
-### Create a new database
+---
+
+## list-databases — List All Databases
+
+List all databases on the server.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+
+### Example
 
 ```
-Operation:         create-database
-Options File:      /etc/mysql/backup.cnf
-Database:          myapp_staging
+Operation:        list-databases
+Options File:     /etc/mysql/backup.cnf
 ```
 
-### Check and repair tables
+---
+
+## create-database — Create a New Database
+
+Create a new database (IF NOT EXISTS).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Database** | Yes | Name of the new database |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+
+### Example
+
+```
+Operation:        create-database
+Options File:     /etc/mysql/backup.cnf
+Database:         myapp_staging
+```
+
+---
+
+## drop-database — Drop (Delete) a Database
+
+Drop (delete) an existing database. **Warning: This is irreversible!**
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Database** | Yes | Name of the database to drop |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+
+### Example
+
+```
+Operation:        drop-database
+Options File:     /etc/mysql/backup.cnf
+Database:         old_staging
+```
+
+---
+
+## check — Check and Repair Database Tables
+
+Run `mysqlcheck --auto-repair` on a database.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Options / Password File** | Yes | Path to MySQL options file |
+| **Database** | Yes | Database to check |
+| **Host** | No | MySQL server hostname |
+| **Port** | No | MySQL server port |
+| **Username** | No | MySQL username |
+| **Extra Flags** | No | Additional flags |
+
+### Example
 
 ```
 Operation:        check
@@ -137,7 +236,7 @@ Example: `/backups/mydb_%Y-%m-%d_%H%M%S.sql.gz`
 - Include `--routines --events` to also dump stored procedures, functions, and events.
 - Use `--hex-blob` to safely dump binary columns.
 - For very large databases, consider splitting by table or using `mydumper` for parallel exports.
-- The `check` operation calls `mysqlcheck`, which can also `--auto-repair` minor corruption.
+- The `check` operation can also `--auto-repair` minor corruption.
 
 ---
 

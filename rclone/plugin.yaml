@@ -1,5 +1,5 @@
 name: rclone
-version: 1.0.2
+version: 2.0.0
 label: Rclone
 description: |
   Sync, copy, move, or check files between any rclone-supported storage

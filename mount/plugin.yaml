@@ -1,5 +1,5 @@
 name: mount
-version: 1.0.1
+version: 2.0.0
 label: Mount / Unmount
 description: |
   Mount or unmount filesystems on the agent — NFS, CIFS/SMB, ext4/xfs/btrfs

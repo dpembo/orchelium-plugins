@@ -4,43 +4,251 @@ Manage Docker containers and images on the agent host. Supports starting, stoppi
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+All operations accept:
+
+| Parameter | Description |
 |-----------|-------------|
-| `start` | Start a stopped container |
-| `stop` | Stop a running container |
-| `restart` | Restart a container |
-| `exec` | Run a command inside a running container |
-| `run` | Create and start a temporary container from an image |
-| `pull` | Pull an image from a registry |
-| `rm` | Remove a stopped container |
-| `logs` | Fetch recent container logs |
-| `ps` | List containers |
-| `inspect` | Show detailed container information |
-| `prune` | Remove all stopped containers and dangling images |
+| **Docker Host** | Override Docker socket, e.g. `tcp://192.168.1.10:2376` |
 
 ---
 
-## Parameters
+## start — Start a Stopped Container
 
-| Parameter | Required | Operations | Description |
-|-----------|----------|------------|-------------|
-| **Operation** | Yes | — | Operation to perform |
-| **Container Name / ID** | start, stop, restart, exec, rm, logs, inspect | Container name or ID |
-| **Image** | run, pull | Docker image reference, e.g. `nginx:latest` |
-| **Exec Command** | exec | Command to run inside the container |
-| **Run Command** | No | run | Override the image entrypoint/command |
-| **Volume Mounts** | No | run | Space-separated: `host:container` or `host:container:mode` |
-| **Environment Variables** | No | run | Space-separated: `KEY=value KEY2=value2` |
-| **Network** | No | run | Docker network to attach to |
-| **Extra docker run Flags** | No | run | Any additional `docker run` flags |
-| **Stop Timeout (seconds)** | No | stop | Grace period before SIGKILL (default: 10s) |
-| **Log Lines** | No | logs | Number of recent lines to fetch (default: 100) |
-| **Logs Since** | No | logs | Show logs since a time, e.g. `1h` or `2026-05-15T00:00:00` |
-| **Show All Containers** | No | ps | Include stopped containers (`yes`/`no`) |
-| **Also Prune Volumes** | No | prune | Remove unused volumes too (`yes`/`no`) |
-| **Docker Host** | No | All | Override Docker socket, e.g. `tcp://192.168.1.10:2376` |
+Start one or more stopped containers.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:     start
+Container:     my-database
+```
+
+---
+
+## stop — Stop a Running Container
+
+Stop one or more running containers with a configurable grace period.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Stop Timeout (seconds)** | No | Grace period before SIGKILL (default: 10s) |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:     stop
+Container:     my-database
+Timeout:       30
+```
+
+---
+
+## restart — Restart a Container
+
+Restart one or more containers (stop + start).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:    restart
+Container:    my-app
+```
+
+---
+
+## exec — Run a Command Inside a Container
+
+Execute a command inside a running container.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Exec Command** | Yes | Command to run inside the container |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:       exec
+Container:       my-database
+Exec Command:    /bin/sh -c 'pg_dump mydb > /var/backups/dump.sql'
+```
+
+---
+
+## run — Create and Start a Temporary Container
+
+Create and run a one-off container from an image, then automatically remove it after it exits.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Image** | Yes | Docker image reference, e.g. `nginx:latest` |
+| **Run Command** | No | Override the image entrypoint/command |
+| **Volume Mounts** | No | Space-separated: `host:container` or `host:container:mode` |
+| **Environment Variables** | No | Space-separated: `KEY=value KEY2=value2` |
+| **Network** | No | Docker network to attach to |
+| **Extra docker run Flags** | No | Any additional `docker run` flags |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:       run
+Image:           postgres:16-alpine
+Run Command:     pg_dump -h db -U postgres mydb
+Volumes:         /mnt/backup:/backup
+Environment:     PGPASSWORD=secret DB_HOST=db
+Network:         myapp_network
+Extra Flags:     --rm
+```
+
+---
+
+## pull — Pull an Image from a Registry
+
+Pull an image from a Docker registry (Docker Hub, GitHub Container Registry, etc.).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Image** | Yes | Docker image reference, e.g. `ghcr.io/myorg/myapp:latest` |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:    pull
+Image:        ghcr.io/myorg/myapp:latest
+```
+
+---
+
+## rm — Remove a Stopped Container
+
+Remove one or more stopped containers.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:    rm
+Container:    old-container
+```
+
+---
+
+## logs — Fetch Container Logs
+
+Fetch recent log output from a container.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Log Lines** | No | Number of recent lines to fetch (default: 100) |
+| **Logs Since** | No | Show logs since a time, e.g. `1h` or `2026-05-15T00:00:00` |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:      logs
+Container:      my-app
+Log Lines:      200
+Logs Since:     2h
+```
+
+---
+
+## ps — List Containers
+
+List all containers (running and stopped, configurable).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Show All Containers** | No | Include stopped containers (`yes`/`no`; default: `no`) |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:    ps
+Show All:     yes
+```
+
+---
+
+## inspect — Show Container Details
+
+Return low-level container information as JSON.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Container Name / ID** | Yes | Container name or ID |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:    inspect
+Container:    my-app
+```
+
+---
+
+## prune — Remove Stopped Containers and Dangling Images
+
+Remove all stopped containers, dangling images, and unused networks.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Also Prune Volumes** | No | Remove unused volumes too (`yes`/`no`; default: `no`) |
+| **Docker Host** | No | Override Docker socket |
+
+### Example
+
+```
+Operation:         prune
+Also Prune Volumes: no
+```
 
 ---
 

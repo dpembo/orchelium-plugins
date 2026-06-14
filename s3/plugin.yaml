@@ -1,5 +1,5 @@
 name: s3
-version: 1.0.1
+version: 2.0.0
 label: S3 Object Storage
 description: |
   Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi,

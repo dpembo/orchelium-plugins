@@ -1,5 +1,5 @@
 name: opnsense
-version: 1.0.3
+version: 2.0.0
 label: OPNsense Firewall
 description: |
   Query and manage OPNsense firewall configurations and diagnostics.

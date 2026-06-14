@@ -1,37 +1,31 @@
 # Tar Archive Plugin
 
 Create, extract, or list tar archives using the standard `tar` command.
-No extra dependencies required — `tar` is available on every Linux and
-macOS system.
+No extra dependencies required — `tar` is available on every Linux and macOS system.
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+All operations require:
+
+| Parameter | Description |
 |-----------|-------------|
-| `create` | Bundle one or more files/directories into a new archive |
-| `extract` | Unpack an existing archive, optionally to a specific directory |
-| `list` | List the contents of an archive without extracting |
+| **Archive Path** | Path to the `.tar` / `.tar.gz` / etc. file |
+
+Optional for all operations:
+
+| Parameter | Description |
+|-----------|-------------|
+| **Compression** | Algorithm: `auto`, `none`, `gzip`, `bzip2`, `xz`, `zstd` |
+| **Exclude Pattern(s)** | Space-separated globs: `*.log *.tmp .cache` |
+| **Extra tar Flags** | Raw flags passed directly to tar |
 
 ---
 
-## Parameters
+## Compression auto-detection
 
-| Parameter | Required | Default | Description |
-|-----------|----------|---------|-------------|
-| **Operation** | Yes | `create` | The action to perform |
-| **Archive Path** | Yes | — | Path to the `.tar` / `.tar.gz` / etc. file |
-| **Source Path(s)** | For `create` | — | Space-separated files or directories to archive |
-| **Extract Destination** | No | CWD | Directory to extract into (`extract` only) |
-| **Compression** | No | `auto` | Algorithm: `auto`, `none`, `gzip`, `bzip2`, `xz`, `zstd` |
-| **Exclude Pattern(s)** | No | — | Space-separated globs: `*.log *.tmp .cache` |
-| **Extra tar Flags** | No | — | Raw flags passed directly to tar |
-
-### Compression auto-detection
-
-When compression is set to `auto` (the default), the archive file extension
-determines the algorithm:
+When compression is set to `auto` (the default), the archive file extension determines the algorithm:
 
 | Extension | Algorithm |
 |-----------|-----------|
@@ -43,32 +37,86 @@ determines the algorithm:
 
 ---
 
-## Usage Examples
+## create — Bundle Files into a New Archive
 
-```yaml
-# Create a gzip-compressed backup of /var/data
-operation: create
-archive: /backup/data-2024-01-15.tar.gz
-source: /var/data/
+Bundle one or more files/directories into a new archive.
 
-# Create with exclusions
-operation: create
-archive: /backup/app.tar.gz
-source: /opt/myapp/
-exclude: "*.log *.tmp node_modules"
+### Parameters
 
-# Extract to a specific directory
-operation: extract
-archive: /backup/data-2024-01-15.tar.gz
-destination: /restore/data/
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Archive Path** | Yes | Path to the output `.tar` / `.tar.gz` / etc. file |
+| **Source Path(s)** | Yes | Space-separated files or directories to archive |
+| **Compression** | No | Algorithm (default: `auto`) |
+| **Exclude Pattern(s)** | No | Space-separated glob patterns to skip |
+| **Extra tar Flags** | No | Raw flags passed directly to tar |
 
-# List contents of an archive
-operation: list
-archive: /backup/app.tar.gz
+### Example
 
-# Multiple source paths, zstd compression
-operation: create
-archive: /backup/configs.tar.zst
-source: "/etc/nginx/ /etc/postgresql/"
-exclude: "*.pid"
 ```
+Operation:    create
+Archive:      /backup/data-2026-01-15.tar.gz
+Source:       /var/data/
+Compression:  auto
+```
+
+---
+
+## extract — Unpack an Existing Archive
+
+Unpack an existing archive, optionally to a specific directory.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Archive Path** | Yes | Path to the input archive file |
+| **Extract Destination** | No | Directory to extract into (default: current directory) |
+| **Compression** | No | Algorithm (default: `auto`) |
+| **Extra tar Flags** | No | Raw flags passed directly to tar |
+
+### Example
+
+```
+Operation:       extract
+Archive:         /backup/data-2026-01-15.tar.gz
+Destination:     /restore/data/
+Compression:     auto
+```
+
+---
+
+## list — List Archive Contents
+
+List the contents of an archive without extracting.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Archive Path** | Yes | Path to the archive file |
+| **Compression** | No | Algorithm (default: `auto`) |
+| **Extra tar Flags** | No | Raw flags passed directly to tar |
+
+### Example
+
+```
+Operation:    list
+Archive:      /backup/app.tar.gz
+Compression:  auto
+```
+
+---
+
+## Tips
+
+- The `auto` compression detection works by file extension—make sure your archive has the right extension (e.g. `.tar.gz` for gzip).
+- To create multiple source paths, separate them with spaces: `/etc/nginx/ /etc/postgresql/ /var/www`
+- Use exclude patterns to avoid backing up logs, caches, or temporary files: `*.log *.tmp node_modules`
+- Tar preserves file permissions and ownership by default; use `--no-same-permissions` in Extra Flags if restoring to a different user.
+
+---
+
+## Requirements
+
+- `tar` command installed (available on all Linux and macOS systems)

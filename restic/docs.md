@@ -4,37 +4,39 @@ Restic is a modern, fast, secure backup program that supports deduplication and 
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+All operations require:
+
+| Parameter | Description |
 |-----------|-------------|
-| `backup` | Create a new snapshot of the specified paths |
-| `forget` | Apply a retention policy and remove old snapshots |
-| `check` | Verify the repository integrity |
-| `snapshots` | List all snapshots in the repository |
-| `restore` | Restore a snapshot to a target directory |
+| **Repository** | Repository URL: local path, `sftp:user@host:/path`, `s3:s3.amazonaws.com/bucket`, etc. |
+| **Password File** | Path to a file containing the repository password |
+
+Optional for all operations:
+
+| Parameter | Description |
+|-----------|-------------|
+| **Extra Flags** | Any additional restic flags |
 
 ---
 
-## Parameters
+## backup — Create a New Snapshot
 
-| Parameter | Required | Operations | Description |
-|-----------|----------|------------|-------------|
-| **Repository** | Yes | All | Repository URL: local path, `sftp:user@host:/path`, `s3:s3.amazonaws.com/bucket`, etc. |
-| **Password File** | Yes | All | Path to a file containing the repository password |
-| **Paths to Back Up** | backup | Space-separated list of paths to include in the snapshot |
-| **Tags** | No | backup, forget | Space-separated tags for the snapshot |
-| **Exclude Patterns** | No | backup | Space-separated glob patterns to exclude |
-| **Forget / Retention Policy** | forget | Flags like `--keep-daily 7 --keep-weekly 4 --keep-monthly 12` |
-| **Snapshot ID** | restore | The snapshot ID to restore (default: `latest`) |
-| **Restore Target** | restore | Directory to restore files into |
-| **Extra Flags** | No | All | Any additional restic flags |
+Create a new snapshot of the specified paths.
 
----
+### Parameters
 
-## Usage Examples
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Repository** | Yes | Repository URL |
+| **Password File** | Yes | Path to a file containing the repository password |
+| **Paths to Back Up** | Yes | Space-separated list of paths to include in the snapshot |
+| **Tags** | No | Space-separated tags for the snapshot |
+| **Exclude Patterns** | No | Space-separated glob patterns to exclude |
+| **Extra Flags** | No | Additional restic flags |
 
-### Back up home directory and web root
+### Example
 
 ```
 Operation:        backup
@@ -45,20 +47,23 @@ Tags:             daily web
 Exclude:          *.log .cache
 ```
 
-### Back up to S3
+---
 
-```
-Operation:        backup
-Repository:       s3:s3.amazonaws.com/my-backup-bucket
-Password File:    /etc/restic/s3-password
-Paths:            /var/lib/postgresql
-Extra Flags:      --verbose
-```
+## forget — Apply a Retention Policy
 
-> **Note:** For S3, you must also set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
-> as environment variables on the agent host (e.g. in `/etc/environment` or `.profile`).
+Apply a retention policy and remove old snapshots.
 
-### Apply retention policy
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Repository** | Yes | Repository URL |
+| **Password File** | Yes | Path to a file containing the repository password |
+| **Forget / Retention Policy** | Yes | Flags like `--keep-daily 7 --keep-weekly 4 --keep-monthly 12` |
+| **Tags** | No | Space-separated tags to filter snapshots |
+| **Extra Flags** | No | Additional flags (e.g. `--prune`) |
+
+### Example
 
 ```
 Operation:           forget
@@ -68,17 +73,44 @@ Forget Policy:       --keep-daily 7 --keep-weekly 4 --keep-monthly 12 --prune
 Tags:                daily
 ```
 
-### Restore latest snapshot
+---
+
+## check — Verify Repository Integrity
+
+Verify the repository integrity.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Repository** | Yes | Repository URL |
+| **Password File** | Yes | Path to a file containing the repository password |
+| **Extra Flags** | No | Additional flags (e.g. `--read-data-subset=10%`) |
+
+### Example
 
 ```
-Operation:           restore
-Repository:          /mnt/backup/restic-repo
-Password File:       /etc/restic/password
-Snapshot ID:         latest
-Restore Target:      /tmp/restore
+Operation:        check
+Repository:       /mnt/backup/restic-repo
+Password File:    /etc/restic/password
+Extra Flags:      --read-data-subset=10%
 ```
 
-### List all snapshots
+---
+
+## snapshots — List All Snapshots
+
+List all snapshots in the repository.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Repository** | Yes | Repository URL |
+| **Password File** | Yes | Path to a file containing the repository password |
+| **Extra Flags** | No | Additional restic flags |
+
+### Example
 
 ```
 Operation:        snapshots
@@ -86,13 +118,30 @@ Repository:       /mnt/backup/restic-repo
 Password File:    /etc/restic/password
 ```
 
-### Verify repository
+---
+
+## restore — Restore a Snapshot
+
+Restore a snapshot to a target directory.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Repository** | Yes | Repository URL |
+| **Password File** | Yes | Path to a file containing the repository password |
+| **Snapshot ID** | No | The snapshot ID to restore (default: `latest`) |
+| **Restore Target** | Yes | Directory to restore files into |
+| **Extra Flags** | No | Additional restic flags |
+
+### Example
 
 ```
-Operation:        check
-Repository:       /mnt/backup/restic-repo
-Password File:    /etc/restic/password
-Extra Flags:      --read-data-subset=10%
+Operation:           restore
+Repository:          /mnt/backup/restic-repo
+Password File:       /etc/restic/password
+Snapshot ID:         latest
+Restore Target:      /tmp/restore
 ```
 
 ---

@@ -6,52 +6,28 @@ Compatible with: **AWS S3**, **MinIO**, **Wasabi**, **Cloudflare R2**, **Backbla
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+Optional for all operations:
+
+| Parameter | Description |
 |-----------|-------------|
-| `sync` | Synchronise a local directory to/from an S3 prefix (transfers only changed files) |
-| `upload` | Upload a file or directory to S3 |
-| `download` | Download an object or prefix from S3 to a local path |
-| `ls` | List objects in a bucket or prefix |
-| `delete` | Delete an object or all objects under a prefix |
-| `mb` | Create a new bucket |
-| `presign` | Generate a temporary pre-signed download URL |
+| **AWS Credentials File** | Path to an AWS credentials file (default: `~/.aws/credentials`) |
+| **AWS Profile** | Named profile within the credentials file (default: `default`) |
+| **AWS Region** | AWS region (e.g. `us-east-1`) |
+| **Endpoint URL** | Custom endpoint for non-AWS services |
+| **Dry Run** | Simulate without making changes (`yes`/`no`) |
 
----
+### Authentication
 
-## Parameters
-
-| Parameter | Required | Default | Description |
-|-----------|----------|---------|-------------|
-| **Operation** | Yes | `sync` | Operation to perform |
-| **Bucket** | Most operations | — | S3 bucket name |
-| **S3 Prefix / Key** | No | — | Object key or path prefix within the bucket |
-| **Local Path** | sync, upload, download | — | Local file or directory |
-| **AWS Credentials File** | No | `~/.aws/credentials` | Path to an AWS credentials file |
-| **AWS Profile** | No | `default` | Named profile within the credentials file |
-| **AWS Region** | No | — | AWS region (e.g. `us-east-1`). Often not needed for S3-compatible services |
-| **Endpoint URL** | No | — | Custom endpoint for non-AWS services (e.g. `https://s3.wasabisys.com`) |
-| **Storage Class** | No | `STANDARD` | S3 storage class for uploads |
-| **Delete Extra Files** | No | `no` | Remove S3 objects that no longer exist in source (sync only) |
-| **Dry Run** | No | `no` | Simulate without making changes |
-| **Exclude Patterns** | No | — | Space-separated glob patterns to skip |
-| **Include Patterns** | No | — | Space-separated glob patterns to include (applied after excludes) |
-| **Presign Expiry (seconds)** | No | `3600` | Validity period for pre-signed URLs |
-| **Extra Flags** | No | — | Any additional AWS CLI flags |
-
----
-
-## Authentication
-
-Credentials are **never** passed on the command line. Instead, the plugin reads them from (in order of priority):
+Credentials are **never** passed on the command line. The plugin reads them (in order of priority):
 
 1. **Credentials File** field → sets `AWS_SHARED_CREDENTIALS_FILE`
 2. **Profile** field → sets `AWS_PROFILE`
 3. Agent environment variables: `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`
 4. IAM instance role / container credentials (EC2 / ECS)
 
-### Credentials file format
+#### Credentials File Format
 
 ```ini
 [default]
@@ -65,9 +41,24 @@ chmod 600 /etc/aws/backup-credentials
 
 ---
 
-## Usage Examples
+## sync — Synchronise a Local Directory to/from S3
 
-### Sync local backups to S3
+Make destination identical to source (transfers only changed files).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | S3 bucket name |
+| **S3 Prefix / Key** | Yes | Object key prefix (path within the bucket) |
+| **Local Path** | Yes | Local file or directory |
+| **Delete Extra Files** | No | Remove S3 objects that no longer exist in source (`yes`/`no`) |
+| **Exclude Patterns** | No | Space-separated glob patterns to skip |
+| **Include Patterns** | No | Space-separated glob patterns to include |
+| **Storage Class** | No | S3 storage class for uploads (default: `STANDARD`) |
+| **Extra Flags** | No | Any additional AWS CLI flags |
+
+### Example
 
 ```
 Operation:       sync
@@ -78,7 +69,24 @@ Credentials:     /etc/aws/backup-credentials
 Delete:          yes
 ```
 
-### Upload a single compressed dump
+---
+
+## upload — Upload a File or Directory to S3
+
+Upload one or more files to S3.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | S3 bucket name |
+| **S3 Prefix / Key** | Yes | Object key prefix |
+| **Local Path** | Yes | Local file or directory |
+| **Storage Class** | No | S3 storage class (default: `STANDARD`) |
+| **Exclude Patterns** | No | Space-separated glob patterns to skip |
+| **Extra Flags** | No | Additional AWS CLI flags |
+
+### Example
 
 ```
 Operation:       upload
@@ -89,7 +97,23 @@ Credentials:     /etc/aws/backup-credentials
 Storage Class:   STANDARD_IA
 ```
 
-### Download a backup file
+---
+
+## download — Download an Object or Prefix from S3
+
+Download one or more objects from S3 to a local path.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | S3 bucket name |
+| **S3 Prefix / Key** | Yes | Object key prefix |
+| **Local Path** | Yes | Local destination path |
+| **Exclude Patterns** | No | Space-separated glob patterns to skip |
+| **Extra Flags** | No | Additional AWS CLI flags |
+
+### Example
 
 ```
 Operation:       download
@@ -99,7 +123,21 @@ Local Path:      /tmp/restore/mydb.sql.gz
 Credentials:     /etc/aws/backup-credentials
 ```
 
-### List objects under a prefix
+---
+
+## ls — List Objects in a Bucket or Prefix
+
+List objects in a bucket or prefix.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | S3 bucket name |
+| **S3 Prefix / Key** | No | Object key prefix to filter |
+| **Extra Flags** | No | Additional AWS CLI flags |
+
+### Example
 
 ```
 Operation:    ls
@@ -108,7 +146,21 @@ Prefix:       databases/
 Credentials:  /etc/aws/backup-credentials
 ```
 
-### Delete a specific object
+---
+
+## delete — Delete an Object or Prefix
+
+Delete an object or all objects under a prefix.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | S3 bucket name |
+| **S3 Prefix / Key** | Yes | Object key or prefix to delete |
+| **Extra Flags** | No | Additional AWS CLI flags |
+
+### Example
 
 ```
 Operation:    delete
@@ -117,18 +169,46 @@ Prefix:       dumps/mydb_2026-04-01.sql.gz
 Credentials:  /etc/aws/backup-credentials
 ```
 
-### Delete all objects under a prefix
+A prefix ending in `/` automatically triggers recursive deletion.
+
+---
+
+## mb — Create a New Bucket
+
+Create a new S3 bucket.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | New bucket name |
+| **AWS Region** | No | Region for the new bucket |
+| **Extra Flags** | No | Additional AWS CLI flags |
+
+### Example
 
 ```
-Operation:    delete
-Bucket:       my-backup-bucket
-Prefix:       old-backups/
-Credentials:  /etc/aws/backup-credentials
+Operation:    mb
+Bucket:       my-new-backup-bucket
+Region:       us-east-1
 ```
 
-> A prefix ending in `/` automatically triggers a recursive delete.
+---
 
-### Generate a pre-signed download URL
+## presign — Generate a Pre-Signed Download URL
+
+Generate a temporary pre-signed download URL for secure, time-limited access.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Bucket** | Yes | S3 bucket name |
+| **S3 Prefix / Key** | Yes | Object key |
+| **Presign Expiry (seconds)** | No | Validity period (default: `3600`) |
+| **Extra Flags** | No | Additional AWS CLI flags |
+
+### Example
 
 ```
 Operation:        presign
@@ -139,6 +219,19 @@ Presign Expiry:   86400
 ```
 
 The URL is printed to the output and can be shared for secure, time-limited access without AWS credentials.
+
+---
+
+## Storage Classes
+
+| Class | Description |
+|-------|-------------|
+| `STANDARD` | Default; frequent access |
+| `STANDARD_IA` | Infrequent access; lower cost, retrieval fee |
+| `INTELLIGENT_TIERING` | Auto-moves between tiers based on access patterns |
+| `GLACIER_IR` | Instant retrieval archival — seconds |
+| `GLACIER` | Archival — minutes to hours retrieval |
+| `DEEP_ARCHIVE` | Cheapest long-term archival — hours retrieval |
 
 ---
 
@@ -166,20 +259,7 @@ Credentials:     /etc/minio/credentials
 Region:          us-east-1
 ```
 
-> MinIO requires a region value even though it is not used — `us-east-1` works universally.
-
----
-
-## Storage Classes
-
-| Class | Description |
-|-------|-------------|
-| `STANDARD` | Default; frequent access |
-| `STANDARD_IA` | Infrequent access; lower cost, retrieval fee |
-| `INTELLIGENT_TIERING` | Auto-moves between tiers based on access patterns |
-| `GLACIER_IR` | Instant retrieval archival — seconds |
-| `GLACIER` | Archival — minutes to hours retrieval |
-| `DEEP_ARCHIVE` | Cheapest long-term archival — hours retrieval |
+MinIO requires a region value even though it is not used — `us-east-1` works universally.
 
 ---
 

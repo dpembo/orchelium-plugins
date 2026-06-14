@@ -4,44 +4,38 @@ Rclone is a command-line tool for syncing files between cloud storage providers,
 
 ---
 
-## Operations
+## Common Parameters
 
-| Operation | Description |
+All operations support optional parameters:
+
+| Parameter | Description |
 |-----------|-------------|
-| `sync` | Make destination identical to source (deletes extra files at destination) |
-| `copy` | Copy new/changed files to destination without deleting anything |
-| `move` | Move files from source to destination (deletes source after transfer) |
-| `check` | Verify that source and destination files match |
-| `ls` | List files in a remote or local path |
-| `delete` | Delete files in a path (without removing the directory) |
-| `purge` | Delete a directory and all its contents |
+| **Config File** | Path to a custom `rclone.conf` (defaults to `~/.config/rclone/rclone.conf`) |
+| **Parallel Transfers** | Number of simultaneous file transfers (default: 4) |
+| **Parallel Checkers** | Number of simultaneous file checkers (default: 8) |
+| **Bandwidth Limit** | Transfer rate limit, e.g. `10M`, `1G`, `10M:off` (time-of-day schedule) |
+| **Include Patterns** | Space-separated glob patterns to include |
+| **Exclude Patterns** | Space-separated glob patterns to exclude |
+| **Filter File** | Path to a file with include/exclude rules |
+| **Use Checksum** | Compare by checksum instead of size+mtime (`yes`/`no`) |
+| **Dry Run** | Simulate the operation without making changes (`yes`/`no`) |
+| **Log Level** | Verbosity: `ERROR`, `NOTICE`, `INFO`, `DEBUG` |
+| **Extra Flags** | Any additional rclone flags |
 
 ---
 
-## Parameters
+## sync — Make Destination Identical to Source
 
-| Parameter | Required | Operations | Description |
-|-----------|----------|------------|-------------|
-| **Operation** | Yes | — | Operation to perform |
-| **Source** | Yes | sync, copy, move, check, ls, delete, purge | Source path or remote, e.g. `/local/path`, `s3:bucket/path`, `gdrive:Backups` |
-| **Destination** | sync, copy, move, check | Destination path or remote |
-| **Config File** | No | — | Path to a custom `rclone.conf` (defaults to `~/.config/rclone/rclone.conf`) |
-| **Parallel Transfers** | No | — | Number of simultaneous file transfers (default: 4) |
-| **Parallel Checkers** | No | — | Number of simultaneous file checkers (default: 8) |
-| **Bandwidth Limit** | No | — | Transfer rate limit, e.g. `10M`, `1G`, `10M:off` (time-of-day schedule) |
-| **Include Patterns** | No | — | Space-separated glob patterns to include |
-| **Exclude Patterns** | No | — | Space-separated glob patterns to exclude |
-| **Filter File** | No | — | Path to a file with include/exclude rules |
-| **Use Checksum** | No | `no` | Compare by checksum instead of size+mtime |
-| **Dry Run** | No | `no` | Simulate the operation without making changes |
-| **Log Level** | No | `NOTICE` | Verbosity: `ERROR`, `NOTICE`, `INFO`, `DEBUG` |
-| **Extra Flags** | No | — | Any additional rclone flags |
+Make destination identical to source (deletes extra files at destination).
 
----
+### Parameters
 
-## Usage Examples
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Source path or remote, e.g. `/local/path`, `s3:bucket/path`, `gdrive:Backups` |
+| **Destination** | Yes | Destination path or remote |
 
-### Sync local directory to S3
+### Example
 
 ```
 Operation:    sync
@@ -52,7 +46,20 @@ Log Level:    INFO
 Extra Flags:  --s3-storage-class STANDARD_IA
 ```
 
-### Copy to Google Drive
+---
+
+## copy — Copy New/Updated Files to Destination
+
+Copy new/changed files to destination without deleting anything.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Source path or remote |
+| **Destination** | Yes | Destination path or remote |
+
+### Example
 
 ```
 Operation:      copy
@@ -62,17 +69,42 @@ Transfers:      4
 Exclude:        .cache/ *.tmp
 ```
 
-### Mirror with bandwidth throttling
+---
+
+## move — Move Files from Source to Destination
+
+Move files from source to destination (deletes source after transfer).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Source path or remote |
+| **Destination** | Yes | Destination path or remote |
+
+### Example
 
 ```
-Operation:           sync
-Source:              /data/media
-Destination:         b2:my-b2-bucket/media
-Bandwidth Limit:     50M
-Exclude:             *.part .DS_Store
+Operation:    move
+Source:       /data/media
+Destination:  b2:my-b2-bucket/media
 ```
 
-### Verify source and destination match
+---
+
+## check — Verify Source and Destination Match
+
+Verify that source and destination files match without transferring.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Source path or remote |
+| **Destination** | Yes | Destination path or remote |
+| **Use Checksum** | No | Compare by checksum instead of size+mtime |
+
+### Example
 
 ```
 Operation:       check
@@ -81,21 +113,63 @@ Destination:     s3:my-archive-bucket/archive
 Use Checksum:    yes
 ```
 
-### List a remote path
+---
+
+## ls — List Files in a Remote or Local Path
+
+List files in a remote or local path.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Path or remote to list |
+
+### Example
 
 ```
 Operation:    ls
 Source:       s3:my-backup-bucket/databases
 ```
 
-### Dry run to preview a sync
+---
+
+## delete — Delete Files in a Path
+
+Delete files in a path matching filters (without removing the directory).
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Path or remote where files will be deleted |
+| **Exclude Patterns** | No | Patterns to exclude from deletion |
+
+### Example
 
 ```
-Operation:    sync
-Source:       /var/www
-Destination:  gdrive:WebBackups
-Dry Run:      yes
-Log Level:    INFO
+Operation:    delete
+Source:       s3:my-backup-bucket/old-backups
+Exclude:      *.keep
+```
+
+---
+
+## purge — Delete a Directory and All Its Contents
+
+Delete a directory and all its contents.
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| **Source** | Yes | Path or remote directory to delete |
+
+### Example
+
+```
+Operation:    purge
+Source:       s3:my-backup-bucket/temp-data
 ```
 
 ---

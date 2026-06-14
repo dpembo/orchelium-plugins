@@ -86,8 +86,25 @@ json_to_csv() {
 import sys, json, csv, io
 try:
   data = json.load(sys.stdin)
-  if isinstance(data, dict) and "rows" in data:
-    rows = data["rows"]
+  
+  # Handle different data structures
+  if isinstance(data, dict):
+    if "rows" in data:
+      # Has a "rows" field - use that
+      rows = data["rows"]
+    elif len(data) > 0 and all(isinstance(v, (dict, list)) for v in data.values()):
+      # Dict with complex values - convert to key-value pairs
+      writer = csv.writer(sys.stdout)
+      writer.writerow(['Property', 'Value'])
+      for k, v in data.items():
+        if isinstance(v, (dict, list)):
+          writer.writerow([k, json.dumps(v)])
+        else:
+          writer.writerow([k, str(v)])
+      sys.exit(0)
+    else:
+      # Simple dict - treat as single row
+      rows = [data]
   elif isinstance(data, list):
     rows = data
   else:
@@ -96,8 +113,16 @@ try:
   if not rows:
     sys.exit(0)
   
+  # Write CSV from rows
   if isinstance(rows[0], dict):
-    writer = csv.DictWriter(sys.stdout, fieldnames=rows[0].keys())
+    # Get all unique keys
+    all_keys = set()
+    for row in rows:
+      if isinstance(row, dict):
+        all_keys.update(row.keys())
+    
+    fieldnames = sorted(all_keys)
+    writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames, extrasaction='ignore')
     writer.writeheader()
     writer.writerows(rows)
   else:
@@ -170,21 +195,52 @@ case "$OPERATION" in
     
     RESULT=$(opn_api_get "$ENDPOINT")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
-      echo "$RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print('UUID,Description,Action,Protocol,Source,Destination,Interface,Enabled'); [print(f\"{r['uuid']},{r.get('description','N/A')},{r.get('action','pass')},{r.get('protocol','any')},{r.get('source_net','any')},{r.get('destination_net','any')},{r.get('interface','any')},{r.get('enabled','1')}\") for r in data.get('rows', [])]"
+      echo "$RESULT" | python3 << 'PYEOF'
+import sys, json, csv
+data = json.load(sys.stdin)
+writer = csv.writer(sys.stdout)
+writer.writerow(['UUID', 'Description', 'Action', 'Protocol', 'Source', 'Destination', 'Interface', 'Enabled'])
+for r in data.get('rows', []):
+  writer.writerow([
+    r.get('uuid', ''),
+    r.get('description', 'N/A'),
+    r.get('action', 'pass'),
+    r.get('protocol', 'any'),
+    r.get('source_net', 'any'),
+    r.get('destination_net', 'any'),
+    r.get('interface', 'any'),
+    r.get('enabled', '1')
+  ])
+PYEOF
     else
       echo "$RESULT"
     fi
     ;;
+
   
   firewall-aliases-list)
     # List firewall aliases
     RESULT=$(opn_api_get "/firewall/alias/search_item?current=1&rowCount=999")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
-      echo "$RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print('UUID,Name,Type,Description,Content'); [print(f\"{r['uuid']},{r.get('name','')},{r.get('type','')},{r.get('description','')},{r.get('content','')}\") for r in data.get('rows', [])]"
+      echo "$RESULT" | python3 << 'PYEOF'
+import sys, json, csv
+data = json.load(sys.stdin)
+writer = csv.writer(sys.stdout)
+writer.writerow(['UUID', 'Name', 'Type', 'Description', 'Content'])
+for r in data.get('rows', []):
+  writer.writerow([
+    r.get('uuid', ''),
+    r.get('name', ''),
+    r.get('type', ''),
+    r.get('description', ''),
+    r.get('content', '')
+  ])
+PYEOF
     else
       echo "$RESULT"
     fi
     ;;
+
   
   firewall-nat-list)
     # List all NAT rules (destination NAT, source NAT, 1:1 NAT)
@@ -192,13 +248,14 @@ case "$OPERATION" in
     SNAT=$(opn_api_get "/firewall/source_nat/search_rule?current=1&rowCount=999")
     ONETONE=$(opn_api_get "/firewall/one_to_one/search_rule?current=1&rowCount=999")
     
-    # Combine results
-    python3 << PYEOF
+    # Combine results using Python with arguments to avoid shell variable issues
+    python3 - "$DNAT" "$SNAT" "$ONETONE" "$OUTPUT_FORMAT" << 'PYEOF'
 import json, sys
 try:
-  dnat = json.loads('$DNAT').get('rows', [])
-  snat = json.loads('$SNAT').get('rows', [])
-  onetone = json.loads('$ONETONE').get('rows', [])
+  dnat = json.loads(sys.argv[1]).get('rows', [])
+  snat = json.loads(sys.argv[2]).get('rows', [])
+  onetone = json.loads(sys.argv[3]).get('rows', [])
+  output_format = sys.argv[4]
   
   result = {
     "destination_nat": dnat,
@@ -207,21 +264,25 @@ try:
     "total": len(dnat) + len(snat) + len(onetone)
   }
   
-  if "$OUTPUT_FORMAT" == "csv":
-    print("Type,UUID,Description,Source,Destination,Interface,Enabled")
+  if output_format == "csv":
+    import csv
+    writer = csv.writer(sys.stdout)
+    writer.writerow(["Type", "UUID", "Description", "Source", "Destination", "Interface", "Enabled"])
     for rule in dnat:
-      print(f"DNAT,{rule['uuid']},{rule.get('description','')},{rule.get('source','')},{rule.get('target','')},{rule.get('interface','')},{rule.get('enabled','')}")
+      writer.writerow(["DNAT", rule.get('uuid',''), rule.get('description',''), rule.get('source',''), rule.get('target',''), rule.get('interface',''), rule.get('enabled','')])
     for rule in snat:
-      print(f"SNAT,{rule['uuid']},{rule.get('description','')},{rule.get('source','')},{rule.get('target','')},{rule.get('interface','')},{rule.get('enabled','')}")
+      writer.writerow(["SNAT", rule.get('uuid',''), rule.get('description',''), rule.get('source',''), rule.get('target',''), rule.get('interface',''), rule.get('enabled','')])
     for rule in onetone:
-      print(f"1:1,{rule['uuid']},{rule.get('description','')},{rule.get('source','')},{rule.get('target','')},{rule.get('interface','')},{rule.get('enabled','')}")
+      writer.writerow(["1:1", rule.get('uuid',''), rule.get('description',''), rule.get('source',''), rule.get('target',''), rule.get('interface',''), rule.get('enabled','')])
   else:
     print(json.dumps(result, indent=2))
 except Exception as e:
-  print(f'{{"error": "{e}"}}')
+  print(json.dumps({"error": str(e)}))
   sys.exit(1)
 PYEOF
     ;;
+
+
   
   firewall-stats)
     # Get firewall statistics
@@ -247,7 +308,17 @@ PYEOF
     # Get system information (hostname, version, uptime, etc.)
     RESULT=$(opn_api_post "/diagnostics/system/system_information")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
-      echo "$RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print('Property,Value'); [print(f\"{k},{v}\") for k,v in data.items()]"
+      echo "$RESULT" | python3 << 'PYEOF'
+import sys, json, csv
+data = json.load(sys.stdin)
+writer = csv.writer(sys.stdout)
+writer.writerow(['Property', 'Value'])
+for k, v in data.items():
+  if isinstance(v, (dict, list)):
+    writer.writerow([k, json.dumps(v)])
+  else:
+    writer.writerow([k, str(v)])
+PYEOF
     else
       echo "$RESULT"
     fi
@@ -278,7 +349,17 @@ PYEOF
     # Get core system status
     RESULT=$(opn_api_get "/core/system/status")
     if [ "$OUTPUT_FORMAT" = "csv" ]; then
-      echo "$RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print('Property,Value'); [print(f\"{k},{v}\") for k,v in data.items()]"
+      echo "$RESULT" | python3 << 'PYEOF'
+import sys, json, csv
+data = json.load(sys.stdin)
+writer = csv.writer(sys.stdout)
+writer.writerow(['Property', 'Value'])
+for k, v in data.items():
+  if isinstance(v, (dict, list)):
+    writer.writerow([k, json.dumps(v)])
+  else:
+    writer.writerow([k, str(v)])
+PYEOF
     else
       echo "$RESULT"
     fi

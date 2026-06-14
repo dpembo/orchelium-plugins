@@ -1,5 +1,5 @@
 name: opnsense
-version: 2.1.0
+version: 2.2.0
 label: OPNsense Firewall
 description: |
   Query and manage OPNsense firewall configurations and diagnostics.
@@ -112,7 +112,11 @@ inputs:
       - json
       - csv
       - raw
-    description: Format for returned data (JSON, CSV, or raw).
+    description: |
+      Format for returned data.
+      - json: Pretty-printed JSON (default).
+      - raw: Raw JSON (same as json, for API compatibility).
+      - csv: Comma-separated values for tabular data. Converts list and dict responses to CSV format.
 
 command: ./run.sh
 args:

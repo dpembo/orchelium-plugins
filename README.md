@@ -6,23 +6,30 @@ Plugins are self-contained directories that extend Orchelium with new node types
 
 ## Available Plugins
 
-| Plugin | Category | Description |
-|--------|----------|-------------|
-| [borg](./borg/) | backup | BorgBackup — deduplicated, compressed, encrypted backups |
-| [docker](./docker/) | containers | Docker — start, stop, exec, pull, logs, prune, and more |
-| [lxc-pct](./lxc-pct/) | containers | Proxmox LXC containers via the `pct` CLI |
-| [mount](./mount/) | storage | Mount / unmount NFS, SMB, LUKS, loop, bind, and tmpfs |
-| [mysql](./mysql/) | databases | MySQL / MariaDB backup, restore, and management |
-| [postgresql](./postgresql/) | databases | PostgreSQL backup, restore, and management |
-| [proxmox-backup](./proxmox-backup/) | backup | Proxmox VM / LXC backup via `vzdump` |
-| [rclone](./rclone/) | file-sync | Rclone — sync to/from S3, GDrive, Dropbox, SFTP, and more |
-| [restic](./restic/) | backup | Restic — deduplicated backups to any supported backend |
-| [rsync](./rsync/) | file-sync | Rsync — file sync over SSH or locally |
-| [s3](./s3/) | file-sync | S3 object storage via the AWS CLI |
-| [sqlite](./sqlite/) | databases | SQLite backup, restore, and queries |
-| [truenas](./truenas/) | storage | TrueNAS CORE/SCALE via the REST API |
-| [zfs-send-receive](./zfs-send-receive/) | storage | ZFS dataset replication via `zfs send \| zfs receive` |
-| [zfs-snapshot](./zfs-snapshot/) | storage | ZFS snapshot create, destroy, rollback, and clone |
+| Plugin | Version | Category | Description |
+|--------|---------|----------|-------------|
+| [bitwarden](./bitwarden/) | 1.1.0 | tools | Export a Bitwarden organisation vault to a password-protected ZIP |
+| [borg](./borg/) | 2.1.0 | backup | BorgBackup — deduplicated, compressed, encrypted backups |
+| [docker](./docker/) | 2.1.0 | containers | Docker — start, stop, exec, pull, logs, prune, and more |
+| [file-prune](./file-prune/) | 1.1.0 | system | Delete files by age and wildcard pattern; useful for log rotation |
+| [lxc-pct](./lxc-pct/) | 2.1.0 | containers | Proxmox LXC containers — start, stop, snapshot, clone, exec |
+| [mount](./mount/) | 2.1.0 | storage | Mount/unmount NFS, CIFS/SMB, LUKS, loop, bind, and tmpfs |
+| [mysql](./mysql/) | 2.1.0 | databases | MySQL/MariaDB — dump, restore, query, backup, check, manage |
+| [opnsense](./opnsense/) | 2.2.0 | network | OPNsense firewall — backups, rules, aliases, NAT, diagnostics |
+| [paperless-ngx](./paperless-ngx/) | 2.1.0 | backup | Paperless-ngx document library backup and export |
+| [postgresql](./postgresql/) | 2.1.0 | databases | PostgreSQL — dump, restore, query, backup, maintenance |
+| [proxmox-backup](./proxmox-backup/) | 1.1.3 | backup | Proxmox VM/LXC backup via `vzdump` |
+| [rclone](./rclone/) | 2.1.0 | storage | Rclone — sync to/from S3, GDrive, Dropbox, SFTP, and more |
+| [restic](./restic/) | 2.1.0 | backup | Restic — deduplicated backups to any supported backend |
+| [rsync](./rsync/) | 1.1.1 | backup | Rsync — file sync over SSH or locally with verification |
+| [s3](./s3/) | 2.1.0 | storage | S3 object storage — sync, upload, download, list, delete |
+| [sqlite](./sqlite/) | 2.1.0 | databases | SQLite — backup, restore, query, vacuum, integrity check |
+| [systemd](./systemd/) | 1.1.1 | system | Systemd services — start, stop, restart, enable, disable, status |
+| [tar](./tar/) | 2.1.0 | archiving | Tar archives — create, extract, list with optional compression |
+| [truenas](./truenas/) | 2.1.0 | storage | TrueNAS — snapshots, replication, cloud sync, scrubs |
+| [wake-on-lan](./wake-on-lan/) | 1.1.0 | network | Wake-on-LAN (WoL) magic packet to wake sleeping machines |
+| [zfs-send-receive](./zfs-send-receive/) | 2.1.0 | storage | ZFS dataset replication via `zfs send \| zfs receive` |
+| [zfs-snapshot](./zfs-snapshot/) | 2.1.0 | storage | ZFS snapshots — create, destroy, list, send, rollback, clone |
 
 ## Plugin Structure
 

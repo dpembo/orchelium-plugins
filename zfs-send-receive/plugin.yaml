@@ -1,11 +1,13 @@
 name: zfs-send-receive
-version: 2.0.0
+version: 2.1.0
 label: ZFS Send / Receive
 description: |
   Replicate ZFS datasets via zfs send | zfs receive. Supports full and
   incremental replication, recursive replication of dataset trees, remote
   targets via SSH, raw encrypted streams, and resume tokens for interrupted
   transfers.
+category: storage
+tags: [zfs, replication, backup, ssh]
 
 inputs:
   - name: source_dataset

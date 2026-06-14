@@ -1,5 +1,5 @@
 name: s3
-version: 2.0.0
+version: 2.1.0
 label: S3 Object Storage
 description: |
   Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi,
@@ -10,6 +10,8 @@ description: |
 
   Credentials are read from a standard AWS credentials file or the agent's
   environment variables — never passed on the command line.
+category: storage
+tags: [s3, aws, object-storage, minio, cloud]
 
 command: run.sh
 inputs:

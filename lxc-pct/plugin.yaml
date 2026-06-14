@@ -1,11 +1,13 @@
 name: lxc-pct
-version: 2.0.0
+version: 2.1.0
 label: LXC Container (PCT)
 description: |
   Manage Proxmox LXC containers using the pct (Proxmox Container Toolkit)
   command. The Orchelium agent must run on the Proxmox node that hosts the
   containers. Supports start, stop, restart, exec, status, snapshot,
   rollback, destroy-snapshot, clone, and list operations.
+category: containers
+tags: [lxc, proxmox, containers, virtualisation]
 
 inputs:
   - name: operation

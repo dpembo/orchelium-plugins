@@ -1,10 +1,12 @@
 name: mysql
-version: 2.0.0
+version: 2.1.0
 label: MySQL / MariaDB
 description: |
   Backup, restore and manage MySQL / MariaDB databases.
   Uses mysqldump for exports and mysql / mysqlcheck for other operations.
   Passwords are passed via an options file so they never appear on the command line.
+category: databases
+tags: [mysql, mariadb, backup, database]
 
 inputs:
   - name: operation

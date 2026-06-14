@@ -1,5 +1,5 @@
 name: bitwarden
-version: 1.0.0
+version: 1.1.0
 label: Bitwarden Export
 description: |
   Export a Bitwarden organisation vault to a password-protected ZIP file.
@@ -8,6 +8,9 @@ description: |
   and encrypted before being written to the agent host.
 
   Requires the Bitwarden CLI (bw) to be installed on the agent.
+category: tools
+tags: [bitwarden, password-manager, export, security]
+
 inputs:
   - name: organization_id
     label: Organization ID

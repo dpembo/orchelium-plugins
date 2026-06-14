@@ -1,5 +1,5 @@
 name: truenas
-version: 2.0.0
+version: 2.1.0
 label: TrueNAS
 description: |
   Manage TrueNAS CORE and SCALE via the REST API v2.0.
@@ -9,6 +9,8 @@ description: |
   access to the NAS.
 
   Authentication uses a TrueNAS API key stored in a file on the agent.
+category: storage
+tags: [truenas, zfs, nas, storage, backup]
 
 command: run.sh
 inputs:

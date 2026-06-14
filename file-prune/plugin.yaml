@@ -1,20 +1,13 @@
 name: file-prune
-version: 1.0.0
+version: 1.1.0
 label: File Prune
 description: |
   Delete files in a directory that match a wildcard pattern and are older than
   a specified number of days. Uses find -mtime to locate and remove matching
   files. Useful for pruning backup archives, log files, and any other
   time-based file retention policies.
-
 category: system
-
-tags:
-  - prune
-  - cleanup
-  - files
-  - retention
-  - maintenance
+tags: [prune, cleanup, files, retention, maintenance]
 
 official: true
 

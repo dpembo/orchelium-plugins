@@ -1,10 +1,12 @@
 name: paperless-ngx
-version: 2.0.0
+version: 2.1.0
 label: Paperless-ngx Backup
 description: |
   Backup and export Paperless-ngx document library via Docker.
   Manage maintenance mode, export documents to timestamped directories, and compress backups.
   The Orchelium agent must have Docker access to the Paperless-ngx container host.
+category: backup
+tags: [paperless, docker, backup, documents]
 
 inputs:
   - name: container

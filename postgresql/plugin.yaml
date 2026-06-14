@@ -1,5 +1,5 @@
 name: postgresql
-version: 2.0.0
+version: 2.1.0
 label: PostgreSQL
 description: |
   Backup, restore and manage PostgreSQL databases.
@@ -7,6 +7,8 @@ description: |
   and standard psql / createdb / dropdb / vacuumdb utilities.
   Passwords are managed via a PGPASSFILE (.pgpass) so they never appear
   on the command line.
+category: databases
+tags: [postgresql, postgres, backup, database]
 
 inputs:
   - name: operation

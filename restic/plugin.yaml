@@ -1,10 +1,12 @@
 name: restic
-version: 2.0.0
+version: 2.1.0
 label: Restic Backup
 description: |
   Run a Restic backup, forget, or check operation against any supported
   repository (local, SFTP, REST server, S3, B2, Azure, GCS, etc.).
   Supports password file or environment-variable authentication.
+category: backup
+tags: [restic, backup, dedup, encryption]
 
 inputs:
   - name: operation

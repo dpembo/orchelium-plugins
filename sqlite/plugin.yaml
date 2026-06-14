@@ -1,11 +1,13 @@
 name: sqlite
-version: 2.0.0
+version: 2.1.0
 label: SQLite
 description: |
   Backup, restore and manage SQLite database files.
   Uses the sqlite3 CLI for all operations — no server or authentication required.
   Supports online hot-backup (.backup command), SQL dump/restore, queries,
   VACUUM, integrity checks, and table listing.
+category: databases
+tags: [sqlite, database, backup, sql]
 
 inputs:
   - name: operation

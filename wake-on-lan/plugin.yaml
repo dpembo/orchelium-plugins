@@ -1,10 +1,13 @@
 name: wake-on-lan
-version: 1.0.0
+version: 1.1.0
 label: Wake on LAN
 description: |
   Send a Wake-on-LAN (WoL) magic packet to wake a sleeping or powered-off
   machine on the local network. Uses Python 3 to craft and broadcast the
   magic packet via UDP — no external tools required.
+category: network
+tags: [wake-on-lan, wol, network, power-management]
+
 inputs:
   - name: mac_address
     label: MAC Address

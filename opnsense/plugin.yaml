@@ -1,10 +1,12 @@
 name: opnsense
-version: 2.0.0
+version: 2.1.0
 label: OPNsense Firewall
 description: |
   Query and manage OPNsense firewall configurations and diagnostics.
   Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics.
   Uses OPNsense REST API with API key authentication.
+category: network
+tags: [opnsense, firewall, network, security]
 
 inputs:
   - name: host

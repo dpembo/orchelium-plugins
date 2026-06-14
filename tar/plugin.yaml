@@ -1,10 +1,12 @@
 name: tar
-version: 2.0.0
+version: 2.1.0
 label: Tar Archive
 description: |
   Create, extract, or list tar archives on the agent host. Supports gzip,
   bzip2, xz, and zstd compression. No external dependencies beyond the
   standard tar command available on every Linux and macOS system.
+category: archiving
+tags: [tar, archive, compression, backup]
 inputs:
   - name: operation
     label: Operation

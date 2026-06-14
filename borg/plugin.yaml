@@ -1,10 +1,12 @@
 name: borg
-version: 2.0.0
+version: 2.1.0
 label: Borg Backup
 description: |
   Run BorgBackup (borg) operations — create, prune, check, list, info, or
   compact — against local or remote repositories. Supports SSH remotes,
   passphrase authentication, deduplication, and compression.
+category: backup
+tags: [backup, dedup, encryption, ssh]
 
 inputs:
   - name: operation

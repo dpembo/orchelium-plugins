@@ -1,10 +1,12 @@
 name: docker
-version: 2.0.0
+version: 2.1.0
 label: Docker
 description: |
   Run common Docker operations from an Orchelium workflow node — start, stop,
   restart, exec, run, pull, rm, logs, ps, inspect, and prune. The Orchelium
   agent must have access to the Docker socket on the target host.
+category: containers
+tags: [docker, containers, devops]
 
 inputs:
   - name: operation

@@ -1,9 +1,11 @@
 name: rsync
-version: 1.0.1
+version: 1.1.1
 label: Rsync
 description: |
   Synchronise or verify files between directories or hosts using rsync.
   Supports local-to-local, local-to-remote (SSH), and remote-to-local transfers.
+category: backup
+tags: [rsync, sync, file-transfer, backup, ssh]
 
 inputs:
   - name: operation

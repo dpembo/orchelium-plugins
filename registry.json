@@ -1,15 +1,36 @@
 {
   "registryVersion": "1",
-  "updated": "2026-06-13",
+  "updated": "2026-06-14",
   "source": "https://github.com/dpembo/orchelium-plugins",
   "plugins": [
     {
+      "name": "bitwarden",
+      "label": "Bitwarden Export",
+      "description": "Export a Bitwarden organisation vault to a password-protected ZIP file. Authenticates via the Bitwarden API key (client ID + client secret) and unlocks the vault with the master password. The exported file is zipped and encrypted before being written to the agent host. Requires the Bitwarden CLI (bw) to be installed on the agent.",
+      "version": "1.1.0",
+      "category": "tools",
+      "tags": [
+        "bitwarden",
+        "password-manager",
+        "export",
+        "security"
+      ],
+      "official": true,
+      "path": "bitwarden",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
       "name": "borg",
       "label": "Borg Backup",
-      "description": "Run BorgBackup operations — create, prune, check, list, info, or compact — against local or remote repositories. Supports SSH remotes, passphrase authentication, deduplication, and compression.",
-      "version": "1.0.1",
+      "description": "Run BorgBackup (borg) operations \u2014 create, prune, check, list, info, or compact \u2014 against local or remote repositories. Supports SSH remotes, passphrase authentication, deduplication, and compression.",
+      "version": "2.1.0",
       "category": "backup",
-      "tags": ["backup", "dedup", "encryption", "ssh"],
+      "tags": [
+        "backup",
+        "dedup",
+        "encryption",
+        "ssh"
+      ],
       "official": true,
       "path": "borg",
       "minOrcheliumVersion": "1.0.0"
@@ -17,21 +38,47 @@
     {
       "name": "docker",
       "label": "Docker",
-      "description": "Run common Docker operations from an Orchelium workflow node — start, stop, restart, exec, run, pull, rm, logs, ps, inspect, and prune.",
-      "version": "1.0.1",
+      "description": "Run common Docker operations from an Orchelium workflow node \u2014 start, stop, restart, exec, run, pull, rm, logs, ps, inspect, and prune. The Orchelium agent must have access to the Docker socket on the target host.",
+      "version": "2.1.0",
       "category": "containers",
-      "tags": ["docker", "containers", "devops"],
+      "tags": [
+        "docker",
+        "containers",
+        "devops"
+      ],
       "official": true,
       "path": "docker",
       "minOrcheliumVersion": "1.0.0"
     },
     {
+      "name": "file-prune",
+      "label": "File Prune",
+      "description": "Delete files in a directory that match a wildcard pattern and are older than a specified number of days. Uses find -mtime to locate and remove matching files. Useful for pruning backup archives, log files, and any other time-based file retention policies.",
+      "version": "1.1.0",
+      "category": "system",
+      "tags": [
+        "prune",
+        "cleanup",
+        "files",
+        "retention",
+        "maintenance"
+      ],
+      "official": true,
+      "path": "file-prune",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
       "name": "lxc-pct",
       "label": "LXC Container (PCT)",
-      "description": "Manage Proxmox LXC containers using the pct command. Supports start, stop, restart, exec, status, and snapshot operations.",
-      "version": "1.0.1",
+      "description": "Manage Proxmox LXC containers using the pct (Proxmox Container Toolkit) command. The Orchelium agent must run on the Proxmox node that hosts the containers. Supports start, stop, restart, exec, status, snapshot, rollback, destroy-snapshot, clone, and list operations.",
+      "version": "2.1.0",
       "category": "containers",
-      "tags": ["lxc", "proxmox", "containers", "virtualisation"],
+      "tags": [
+        "lxc",
+        "proxmox",
+        "containers",
+        "virtualisation"
+      ],
       "official": true,
       "path": "lxc-pct",
       "minOrcheliumVersion": "1.0.0"
@@ -39,10 +86,16 @@
     {
       "name": "mount",
       "label": "Mount / Unmount",
-      "description": "Mount or unmount filesystems on the agent — NFS, CIFS/SMB, block devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs.",
-      "version": "1.0.0",
+      "description": "Mount or unmount filesystems on the agent \u2014 NFS, CIFS/SMB, ext4/xfs/btrfs block devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs. Can also check whether a path is currently mounted.",
+      "version": "2.1.0",
       "category": "storage",
-      "tags": ["mount", "nfs", "smb", "luks", "filesystem"],
+      "tags": [
+        "mount",
+        "nfs",
+        "smb",
+        "luks",
+        "filesystem"
+      ],
       "official": true,
       "path": "mount",
       "minOrcheliumVersion": "1.0.0"
@@ -50,10 +103,15 @@
     {
       "name": "mysql",
       "label": "MySQL / MariaDB",
-      "description": "Backup, restore and manage MySQL / MariaDB databases. Uses mysqldump for exports and mysql / mysqlcheck for other operations.",
-      "version": "1.0.0",
+      "description": "Backup, restore and manage MySQL / MariaDB databases. Uses mysqldump for exports and mysql / mysqlcheck for other operations. Passwords are passed via an options file so they never appear on the command line.",
+      "version": "2.1.0",
       "category": "databases",
-      "tags": ["mysql", "mariadb", "backup", "database"],
+      "tags": [
+        "mysql",
+        "mariadb",
+        "backup",
+        "database"
+      ],
       "official": true,
       "path": "mysql",
       "minOrcheliumVersion": "1.0.0"
@@ -61,10 +119,15 @@
     {
       "name": "opnsense",
       "label": "OPNsense Firewall",
-      "description": "Query and manage OPNsense firewall configurations, backups, and diagnostics. Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics via the OPNsense REST API.",
-      "version": "1.0.1",
-      "category": "networking",
-      "tags": ["opnsense", "firewall", "backup", "diagnostics", "api"],
+      "description": "Query and manage OPNsense firewall configurations and diagnostics. Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics. Uses OPNsense REST API with API key authentication.",
+      "version": "2.1.0",
+      "category": "network",
+      "tags": [
+        "opnsense",
+        "firewall",
+        "network",
+        "security"
+      ],
       "official": true,
       "path": "opnsense",
       "minOrcheliumVersion": "1.0.0"
@@ -72,10 +135,15 @@
     {
       "name": "paperless-ngx",
       "label": "Paperless-ngx Backup",
-      "description": "Backup and export Paperless-ngx document library via Docker. Manage maintenance mode and perform timestamped, compressed exports.",
-      "version": "1.0.0",
+      "description": "Backup and export Paperless-ngx document library via Docker. Manage maintenance mode, export documents to timestamped directories, and compress backups. The Orchelium agent must have Docker access to the Paperless-ngx container host.",
+      "version": "2.1.0",
       "category": "backup",
-      "tags": ["paperless", "documents", "backup", "docker", "export"],
+      "tags": [
+        "paperless",
+        "docker",
+        "backup",
+        "documents"
+      ],
       "official": true,
       "path": "paperless-ngx",
       "minOrcheliumVersion": "1.0.0"
@@ -83,10 +151,15 @@
     {
       "name": "postgresql",
       "label": "PostgreSQL",
-      "description": "Backup, restore and manage PostgreSQL databases. Uses pg_dump / pg_dumpall for exports and pg_restore / psql for imports.",
-      "version": "1.0.0",
+      "description": "Backup, restore and manage PostgreSQL databases. Uses pg_dump / pg_dumpall for exports, pg_restore / psql for imports, and standard psql / createdb / dropdb / vacuumdb utilities. Passwords are managed via a PGPASSFILE (.pgpass) so they never appear on the command line.",
+      "version": "2.1.0",
       "category": "databases",
-      "tags": ["postgresql", "postgres", "backup", "database"],
+      "tags": [
+        "postgresql",
+        "postgres",
+        "backup",
+        "database"
+      ],
       "official": true,
       "path": "postgresql",
       "minOrcheliumVersion": "1.0.0"
@@ -94,10 +167,16 @@
     {
       "name": "proxmox-backup",
       "label": "Proxmox VM Backup",
-      "description": "Run vzdump on a Proxmox host to back up one or more VMs or LXC containers. Supports all vzdump modes and storage targets.",
-      "version": "1.0.3",
+      "description": "Run vzdump on a Proxmox host to back up one or more VMs or LXC containers. The Orchelium agent must be running on (or have SSH access configured as) the Proxmox node. Supports all vzdump modes and storage targets.",
+      "version": "1.1.3",
       "category": "backup",
-      "tags": ["proxmox", "vm", "backup", "vzdump"],
+      "tags": [
+        "proxmox",
+        "backup",
+        "virtualization",
+        "vm",
+        "lxc"
+      ],
       "official": true,
       "path": "proxmox-backup",
       "minOrcheliumVersion": "1.0.0"
@@ -105,10 +184,16 @@
     {
       "name": "rclone",
       "label": "Rclone",
-      "description": "Sync, copy, move, or check files between any rclone-supported storage backend — local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV, B2, Azure, and many more.",
-      "version": "1.0.1",
-      "category": "file-sync",
-      "tags": ["rclone", "cloud", "sync", "s3", "gdrive"],
+      "description": "Sync, copy, move, or check files between any rclone-supported storage backend \u2014 local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV, B2, Azure, GCS, and many more. Remotes must be pre-configured in the rclone config file on the agent.",
+      "version": "2.1.0",
+      "category": "storage",
+      "tags": [
+        "rclone",
+        "cloud",
+        "sync",
+        "s3",
+        "sftp"
+      ],
       "official": true,
       "path": "rclone",
       "minOrcheliumVersion": "1.0.0"
@@ -116,10 +201,15 @@
     {
       "name": "restic",
       "label": "Restic Backup",
-      "description": "Run a Restic backup, forget, or check operation against any supported repository — local, SFTP, REST server, S3, B2, Azure, GCS, and more.",
-      "version": "1.0.1",
+      "description": "Run a Restic backup, forget, or check operation against any supported repository (local, SFTP, REST server, S3, B2, Azure, GCS, etc.). Supports password file or environment-variable authentication.",
+      "version": "2.1.0",
       "category": "backup",
-      "tags": ["restic", "backup", "dedup", "encryption"],
+      "tags": [
+        "restic",
+        "backup",
+        "dedup",
+        "encryption"
+      ],
       "official": true,
       "path": "restic",
       "minOrcheliumVersion": "1.0.0"
@@ -128,9 +218,15 @@
       "name": "rsync",
       "label": "Rsync",
       "description": "Synchronise or verify files between directories or hosts using rsync. Supports local-to-local, local-to-remote (SSH), and remote-to-local transfers.",
-      "version": "1.0.1",
-      "category": "file-sync",
-      "tags": ["rsync", "sync", "backup", "ssh"],
+      "version": "1.1.1",
+      "category": "backup",
+      "tags": [
+        "rsync",
+        "sync",
+        "file-transfer",
+        "backup",
+        "ssh"
+      ],
       "official": true,
       "path": "rsync",
       "minOrcheliumVersion": "1.0.0"
@@ -138,10 +234,16 @@
     {
       "name": "s3",
       "label": "S3 Object Storage",
-      "description": "Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi, Backblaze B2, Cloudflare R2, etc.) using the AWS CLI.",
-      "version": "1.0.0",
-      "category": "file-sync",
-      "tags": ["s3", "aws", "minio", "cloud", "object-storage"],
+      "description": "Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi, Backblaze B2, Cloudflare R2, etc.) using the AWS CLI. Supports sync, upload, download, list, delete, bucket creation, and pre-signed URL generation. Credentials are read from a standard AWS credentials file or the agent's environment variables \u2014 never passed on the command line.",
+      "version": "2.1.0",
+      "category": "storage",
+      "tags": [
+        "s3",
+        "aws",
+        "object-storage",
+        "minio",
+        "cloud"
+      ],
       "official": true,
       "path": "s3",
       "minOrcheliumVersion": "1.0.0"
@@ -149,10 +251,15 @@
     {
       "name": "sqlite",
       "label": "SQLite",
-      "description": "Backup, restore and manage SQLite database files. Uses the sqlite3 CLI — no server or authentication required. Supports online hot-backup, SQL dump/restore, and queries.",
-      "version": "1.0.0",
+      "description": "Backup, restore and manage SQLite database files. Uses the sqlite3 CLI for all operations \u2014 no server or authentication required. Supports online hot-backup (.backup command), SQL dump/restore, queries, VACUUM, integrity checks, and table listing.",
+      "version": "2.1.0",
       "category": "databases",
-      "tags": ["sqlite", "database", "backup"],
+      "tags": [
+        "sqlite",
+        "database",
+        "backup",
+        "sql"
+      ],
       "official": true,
       "path": "sqlite",
       "minOrcheliumVersion": "1.0.0"
@@ -160,10 +267,15 @@
     {
       "name": "systemd",
       "label": "Systemd Service",
-      "description": "Manage systemd services on the agent host — start, stop, restart, reload, enable, disable, or query service status using systemctl.",
-      "version": "1.0.1",
+      "description": "Manage systemd services on the agent host. Start, stop, restart, reload, enable, disable, or query the status of any systemd unit. Supports both system-wide units and per-user units via the --user flag.",
+      "version": "1.1.1",
       "category": "system",
-      "tags": ["systemd", "services", "linux", "init"],
+      "tags": [
+        "systemd",
+        "services",
+        "linux",
+        "system-management"
+      ],
       "official": true,
       "path": "systemd",
       "minOrcheliumVersion": "1.0.0"
@@ -171,10 +283,15 @@
     {
       "name": "tar",
       "label": "Tar Archive",
-      "description": "Create, extract, or list tar archives with optional gzip, bzip2, xz, or zstd compression. No dependencies beyond the standard tar command.",
-      "version": "1.0.1",
-      "category": "backup",
-      "tags": ["tar", "archive", "backup", "compression"],
+      "description": "Create, extract, or list tar archives on the agent host. Supports gzip, bzip2, xz, and zstd compression. No external dependencies beyond the standard tar command available on every Linux and macOS system.",
+      "version": "2.1.0",
+      "category": "archiving",
+      "tags": [
+        "tar",
+        "archive",
+        "compression",
+        "backup"
+      ],
       "official": true,
       "path": "tar",
       "minOrcheliumVersion": "1.0.0"
@@ -182,21 +299,48 @@
     {
       "name": "truenas",
       "label": "TrueNAS",
-      "description": "Manage TrueNAS CORE and SCALE via the REST API v2.0. Supports ZFS snapshots, replication tasks, and cloud sync tasks.",
-      "version": "1.0.0",
+      "description": "Manage TrueNAS CORE and SCALE via the REST API v2.0. Supports ZFS snapshots, triggering replication and cloud sync tasks, listing datasets, and starting pool scrubs \u2014 all without needing SSH access to the NAS. Authentication uses a TrueNAS API key stored in a file on the agent.",
+      "version": "2.1.0",
       "category": "storage",
-      "tags": ["truenas", "zfs", "nas", "snapshots"],
+      "tags": [
+        "truenas",
+        "zfs",
+        "nas",
+        "storage",
+        "backup"
+      ],
       "official": true,
       "path": "truenas",
       "minOrcheliumVersion": "1.0.0"
     },
     {
+      "name": "wake-on-lan",
+      "label": "Wake on LAN",
+      "description": "Send a Wake-on-LAN (WoL) magic packet to wake a sleeping or powered-off machine on the local network. Uses Python 3 to craft and broadcast the magic packet via UDP \u2014 no external tools required.",
+      "version": "1.1.0",
+      "category": "network",
+      "tags": [
+        "wake-on-lan",
+        "wol",
+        "network",
+        "power-management"
+      ],
+      "official": true,
+      "path": "wake-on-lan",
+      "minOrcheliumVersion": "1.0.0"
+    },
+    {
       "name": "zfs-send-receive",
       "label": "ZFS Send / Receive",
-      "description": "Replicate ZFS datasets via zfs send | zfs receive. Supports full and incremental replication, recursive dataset trees, remote targets via SSH, and resume tokens.",
-      "version": "1.0.0",
+      "description": "Replicate ZFS datasets via zfs send | zfs receive. Supports full and incremental replication, recursive replication of dataset trees, remote targets via SSH, raw encrypted streams, and resume tokens for interrupted transfers.",
+      "version": "2.1.0",
       "category": "storage",
-      "tags": ["zfs", "replication", "backup", "ssh"],
+      "tags": [
+        "zfs",
+        "replication",
+        "backup",
+        "ssh"
+      ],
       "official": true,
       "path": "zfs-send-receive",
       "minOrcheliumVersion": "1.0.0"
@@ -204,45 +348,17 @@
     {
       "name": "zfs-snapshot",
       "label": "ZFS Snapshot",
-      "description": "Create, destroy, list, rollback, or clone ZFS snapshots. Supports recursive operations, incremental sends, and remote replication via SSH.",
-      "version": "1.0.1",
+      "description": "Create, destroy, list, send/receive, rollback, or clone ZFS snapshots. Supports recursive operations, incremental sends, and remote replication via SSH piped zfs receive.",
+      "version": "2.1.0",
       "category": "storage",
-      "tags": ["zfs", "snapshot", "backup"],
+      "tags": [
+        "zfs",
+        "snapshots",
+        "backup",
+        "storage"
+      ],
       "official": true,
       "path": "zfs-snapshot",
-      "minOrcheliumVersion": "1.0.0"
-    },
-    {
-      "name": "wake-on-lan",
-      "label": "Wake on LAN",
-      "description": "Send a Wake-on-LAN magic packet to power on a sleeping machine on the local network. Uses Python 3 — no external tools required.",
-      "version": "1.0.0",
-      "category": "system",
-      "tags": ["wake-on-lan", "wol", "network", "power"],
-      "official": true,
-      "path": "wake-on-lan",
-      "minOrcheliumVersion": "1.0.0"
-    },
-    {
-      "name": "bitwarden",
-      "label": "Bitwarden Export",
-      "description": "Export a Bitwarden organisation vault to a password-protected ZIP file. Authenticates via API key and supports CSV, JSON, and encrypted JSON formats. Uses 7-Zip (AES-256) when available, with a zip fallback.",
-      "version": "1.0.0",
-      "category": "backup",
-      "tags": ["bitwarden", "passwords", "export", "security", "vault"],
-      "official": true,
-      "path": "bitwarden",
-      "minOrcheliumVersion": "1.0.0"
-    },
-    {
-      "name": "file-prune",
-      "label": "File Prune",
-      "description": "Delete files matching a wildcard pattern that are older than a specified number of days. Ideal for enforcing retention policies on backup archives, log files, database dumps, and other time-stamped files.",
-      "version": "1.0.0",
-      "category": "system",
-      "tags": ["prune", "cleanup", "files", "retention", "maintenance"],
-      "official": true,
-      "path": "file-prune",
       "minOrcheliumVersion": "1.0.0"
     }
   ]

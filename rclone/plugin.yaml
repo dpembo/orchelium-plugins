@@ -1,11 +1,13 @@
 name: rclone
-version: 2.0.0
+version: 2.1.0
 label: Rclone
 description: |
   Sync, copy, move, or check files between any rclone-supported storage
   backend — local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV,
   B2, Azure, GCS, and many more. Remotes must be pre-configured in the
   rclone config file on the agent.
+category: storage
+tags: [rclone, cloud, sync, s3, sftp]
 
 inputs:
   - name: operation

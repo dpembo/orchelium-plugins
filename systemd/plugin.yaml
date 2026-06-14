@@ -1,10 +1,13 @@
 name: systemd
-version: 1.0.1
+version: 1.1.1
 label: Systemd Service
 description: |
   Manage systemd services on the agent host. Start, stop, restart, reload,
   enable, disable, or query the status of any systemd unit. Supports both
   system-wide units and per-user units via the --user flag.
+category: system
+tags: [systemd, services, linux, system-management]
+
 inputs:
   - name: operation
     label: Operation

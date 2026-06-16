@@ -6,7 +6,7 @@
     {
       "name": "bitwarden",
       "label": "Bitwarden Export",
-      "description": "Export a Bitwarden organisation vault to a password-protected ZIP file. Authenticates via the Bitwarden API key (client ID + client secret) and unlocks the vault with the master password. The exported file is zipped and encrypted before being written to the agent host. Requires the Bitwarden CLI (bw) to be installed on the agent.",
+      "description": "Export a Bitwarden organisation vault to a password-protected ZIP file.\nAuthenticates via the Bitwarden API key (client ID + client secret) and\nunlocks the vault with the master password. The exported file is zipped\nand encrypted before being written to the agent host.\n\nRequires the Bitwarden CLI (bw) to be installed on the agent.\n",
       "version": "1.1.0",
       "category": "tools",
       "tags": [
@@ -25,7 +25,7 @@
     {
       "name": "borg",
       "label": "Borg Backup",
-      "description": "Run BorgBackup (borg) operations \u2014 create, prune, check, list, info, or compact \u2014 against local or remote repositories. Supports SSH remotes, passphrase authentication, deduplication, and compression.",
+      "description": "Run BorgBackup (borg) operations \u2014 create, prune, check, list, info, or\ncompact \u2014 against local or remote repositories. Supports SSH remotes,\npassphrase authentication, deduplication, and compression.\n",
       "version": "2.1.0",
       "category": "backup",
       "tags": [
@@ -44,7 +44,7 @@
     {
       "name": "docker",
       "label": "Docker",
-      "description": "Run common Docker operations from an Orchelium workflow node \u2014 start, stop, restart, exec, run, pull, rm, logs, ps, inspect, and prune. The Orchelium agent must have access to the Docker socket on the target host.",
+      "description": "Run common Docker operations from an Orchelium workflow node \u2014 start, stop,\nrestart, exec, run, pull, rm, logs, ps, inspect, and prune. The Orchelium\nagent must have access to the Docker socket on the target host.\n",
       "version": "2.1.0",
       "category": "containers",
       "tags": [
@@ -62,7 +62,7 @@
     {
       "name": "file-prune",
       "label": "File Prune",
-      "description": "Delete files in a directory that match a wildcard pattern and are older than a specified number of days. Uses find -mtime to locate and remove matching files. Useful for pruning backup archives, log files, and any other time-based file retention policies.",
+      "description": "Delete files in a directory that match a wildcard pattern and are older than\na specified number of days. Uses find -mtime to locate and remove matching\nfiles. Useful for pruning backup archives, log files, and any other\ntime-based file retention policies.\n",
       "version": "1.1.0",
       "category": "system",
       "tags": [
@@ -82,7 +82,7 @@
     {
       "name": "lxc-pct",
       "label": "LXC Container (PCT)",
-      "description": "Manage Proxmox LXC containers using the pct (Proxmox Container Toolkit) command. The Orchelium agent must run on the Proxmox node that hosts the containers. Supports start, stop, restart, exec, status, snapshot, rollback, destroy-snapshot, clone, and list operations.",
+      "description": "Manage Proxmox LXC containers using the pct (Proxmox Container Toolkit)\ncommand. The Orchelium agent must run on the Proxmox node that hosts the\ncontainers. Supports start, stop, restart, exec, status, snapshot,\nrollback, destroy-snapshot, clone, and list operations.\n",
       "version": "2.1.0",
       "category": "containers",
       "tags": [
@@ -101,7 +101,7 @@
     {
       "name": "mount",
       "label": "Mount / Unmount",
-      "description": "Mount or unmount filesystems on the agent \u2014 NFS, CIFS/SMB, ext4/xfs/btrfs block devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs. Can also check whether a path is currently mounted.",
+      "description": "Mount or unmount filesystems on the agent \u2014 NFS, CIFS/SMB, ext4/xfs/btrfs\nblock devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs.\nCan also check whether a path is currently mounted.\n",
       "version": "2.1.0",
       "category": "storage",
       "tags": [
@@ -121,7 +121,7 @@
     {
       "name": "mysql",
       "label": "MySQL / MariaDB",
-      "description": "Backup, restore and manage MySQL / MariaDB databases. Uses mysqldump for exports and mysql / mysqlcheck for other operations. Passwords are passed via an options file so they never appear on the command line.",
+      "description": "Backup, restore and manage MySQL / MariaDB databases.\nUses mysqldump for exports and mysql / mysqlcheck for other operations.\nPasswords are passed via an options file so they never appear on the command line.\n",
       "version": "2.1.0",
       "category": "databases",
       "tags": [
@@ -140,7 +140,7 @@
     {
       "name": "opnsense",
       "label": "OPNsense Firewall",
-      "description": "Query and manage OPNsense firewall configurations and diagnostics. Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics. Uses OPNsense REST API with API key authentication.",
+      "description": "Query and manage OPNsense firewall configurations and diagnostics.\nAccess backups, firmware status, firewall rules/aliases/NAT, and system diagnostics.\nUses OPNsense REST API with API key authentication.\n",
       "version": "2.2.0",
       "category": "network",
       "tags": [
@@ -159,7 +159,7 @@
     {
       "name": "paperless-ngx",
       "label": "Paperless-ngx Backup",
-      "description": "Backup and export Paperless-ngx document library via Docker. Manage maintenance mode, export documents to timestamped directories, and compress backups. The Orchelium agent must have Docker access to the Paperless-ngx container host.",
+      "description": "Backup and export Paperless-ngx document library via Docker.\nManage maintenance mode, export documents to timestamped directories, and compress backups.\nThe Orchelium agent must have Docker access to the Paperless-ngx container host.\n",
       "version": "2.1.0",
       "category": "backup",
       "tags": [
@@ -178,7 +178,7 @@
     {
       "name": "postgresql",
       "label": "PostgreSQL",
-      "description": "Backup, restore and manage PostgreSQL databases. Uses pg_dump / pg_dumpall for exports, pg_restore / psql for imports, and standard psql / createdb / dropdb / vacuumdb utilities. Passwords are managed via a PGPASSFILE (.pgpass) so they never appear on the command line.",
+      "description": "Backup, restore and manage PostgreSQL databases.\nUses pg_dump / pg_dumpall for exports, pg_restore / psql for imports,\nand standard psql / createdb / dropdb / vacuumdb utilities.\nPasswords are managed via a PGPASSFILE (.pgpass) so they never appear\non the command line.\n",
       "version": "2.1.0",
       "category": "databases",
       "tags": [
@@ -197,7 +197,7 @@
     {
       "name": "proxmox-backup",
       "label": "Proxmox VM Backup",
-      "description": "Run vzdump on a Proxmox host to back up one or more VMs or LXC containers. The Orchelium agent must be running on (or have SSH access configured as) the Proxmox node. Supports all vzdump modes and storage targets.",
+      "description": "Run vzdump on a Proxmox host to back up one or more VMs or LXC containers.\nThe Orchelium agent must be running on (or have SSH access configured as)\nthe Proxmox node. Supports all vzdump modes and storage targets.\n",
       "version": "1.1.3",
       "category": "backup",
       "tags": [
@@ -217,7 +217,7 @@
     {
       "name": "rclone",
       "label": "Rclone",
-      "description": "Sync, copy, move, or check files between any rclone-supported storage backend \u2014 local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV, B2, Azure, GCS, and many more. Remotes must be pre-configured in the rclone config file on the agent.",
+      "description": "Sync, copy, move, or check files between any rclone-supported storage\nbackend \u2014 local disk, S3, Google Drive, Dropbox, OneDrive, SFTP, WebDAV,\nB2, Azure, GCS, and many more. Remotes must be pre-configured in the\nrclone config file on the agent.\n",
       "version": "2.1.0",
       "category": "storage",
       "tags": [
@@ -237,7 +237,7 @@
     {
       "name": "restic",
       "label": "Restic Backup",
-      "description": "Run a Restic backup, forget, or check operation against any supported repository (local, SFTP, REST server, S3, B2, Azure, GCS, etc.). Supports password file or environment-variable authentication.",
+      "description": "Run a Restic backup, forget, or check operation against any supported\nrepository (local, SFTP, REST server, S3, B2, Azure, GCS, etc.).\nSupports password file or environment-variable authentication.\n",
       "version": "2.1.0",
       "category": "backup",
       "tags": [
@@ -256,7 +256,7 @@
     {
       "name": "rsync",
       "label": "Rsync",
-      "description": "Synchronise or verify files between directories or hosts using rsync. Supports local-to-local, local-to-remote (SSH), and remote-to-local transfers.",
+      "description": "Synchronise or verify files between directories or hosts using rsync.\nSupports local-to-local, local-to-remote (SSH), and remote-to-local transfers.\n",
       "version": "1.1.1",
       "category": "backup",
       "tags": [
@@ -276,7 +276,7 @@
     {
       "name": "s3",
       "label": "S3 Object Storage",
-      "description": "Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi, Backblaze B2, Cloudflare R2, etc.) using the AWS CLI. Supports sync, upload, download, list, delete, bucket creation, and pre-signed URL generation. Credentials are read from a standard AWS credentials file or the agent's environment variables \u2014 never passed on the command line.",
+      "description": "Interact with Amazon S3 or any S3-compatible object store (MinIO, Wasabi,\nBackblaze B2, Cloudflare R2, etc.) using the AWS CLI.\n\nSupports sync, upload, download, list, delete, bucket creation, and\npre-signed URL generation.\n\nCredentials are read from a standard AWS credentials file or the agent's\nenvironment variables \u2014 never passed on the command line.\n",
       "version": "2.1.0",
       "category": "storage",
       "tags": [
@@ -296,7 +296,7 @@
     {
       "name": "sqlite",
       "label": "SQLite",
-      "description": "Backup, restore and manage SQLite database files. Uses the sqlite3 CLI for all operations \u2014 no server or authentication required. Supports online hot-backup (.backup command), SQL dump/restore, queries, VACUUM, integrity checks, and table listing.",
+      "description": "Backup, restore and manage SQLite database files.\nUses the sqlite3 CLI for all operations \u2014 no server or authentication required.\nSupports online hot-backup (.backup command), SQL dump/restore, queries,\nVACUUM, integrity checks, and table listing.\n",
       "version": "2.1.0",
       "category": "databases",
       "tags": [
@@ -315,7 +315,7 @@
     {
       "name": "systemd",
       "label": "Systemd Service",
-      "description": "Manage systemd services on the agent host. Start, stop, restart, reload, enable, disable, or query the status of any systemd unit. Supports both system-wide units and per-user units via the --user flag.",
+      "description": "Manage systemd services on the agent host. Start, stop, restart, reload,\nenable, disable, or query the status of any systemd unit. Supports both\nsystem-wide units and per-user units via the --user flag.\n",
       "version": "1.1.1",
       "category": "system",
       "tags": [
@@ -334,7 +334,7 @@
     {
       "name": "tar",
       "label": "Tar Archive",
-      "description": "Create, extract, or list tar archives on the agent host. Supports gzip, bzip2, xz, and zstd compression. No external dependencies beyond the standard tar command available on every Linux and macOS system.",
+      "description": "Create, extract, or list tar archives on the agent host. Supports gzip,\nbzip2, xz, and zstd compression. No external dependencies beyond the\nstandard tar command available on every Linux and macOS system.\n",
       "version": "2.1.0",
       "category": "archiving",
       "tags": [
@@ -353,7 +353,7 @@
     {
       "name": "truenas",
       "label": "TrueNAS",
-      "description": "Manage TrueNAS CORE and SCALE via the REST API v2.0. Supports ZFS snapshots, triggering replication and cloud sync tasks, listing datasets, and starting pool scrubs \u2014 all without needing SSH access to the NAS. Authentication uses a TrueNAS API key stored in a file on the agent.",
+      "description": "Manage TrueNAS CORE and SCALE via the REST API v2.0.\n\nSupports ZFS snapshots, triggering replication and cloud sync tasks,\nlisting datasets, and starting pool scrubs \u2014 all without needing SSH\naccess to the NAS.\n\nAuthentication uses a TrueNAS API key stored in a file on the agent.\n",
       "version": "2.1.0",
       "category": "storage",
       "tags": [
@@ -373,7 +373,7 @@
     {
       "name": "wake-on-lan",
       "label": "Wake on LAN",
-      "description": "Send a Wake-on-LAN (WoL) magic packet to wake a sleeping or powered-off machine on the local network. Uses Python 3 to craft and broadcast the magic packet via UDP \u2014 no external tools required.",
+      "description": "Send a Wake-on-LAN (WoL) magic packet to wake a sleeping or powered-off\nmachine on the local network. Uses Python 3 to craft and broadcast the\nmagic packet via UDP \u2014 no external tools required.\n",
       "version": "1.1.0",
       "category": "network",
       "tags": [
@@ -392,7 +392,7 @@
     {
       "name": "zfs-send-receive",
       "label": "ZFS Send / Receive",
-      "description": "Replicate ZFS datasets via zfs send | zfs receive. Supports full and incremental replication, recursive replication of dataset trees, remote targets via SSH, raw encrypted streams, and resume tokens for interrupted transfers.",
+      "description": "Replicate ZFS datasets via zfs send | zfs receive. Supports full and\nincremental replication, recursive replication of dataset trees, remote\ntargets via SSH, raw encrypted streams, and resume tokens for interrupted\ntransfers.\n",
       "version": "2.1.0",
       "category": "storage",
       "tags": [
@@ -411,7 +411,7 @@
     {
       "name": "zfs-snapshot",
       "label": "ZFS Snapshot",
-      "description": "Create, destroy, list, send/receive, rollback, or clone ZFS snapshots. Supports recursive operations, incremental sends, and remote replication via SSH piped zfs receive.",
+      "description": "Create, destroy, list, send/receive, rollback, or clone ZFS snapshots.\nSupports recursive operations, incremental sends, and remote replication\nvia SSH piped zfs receive.\n",
       "version": "2.1.0",
       "category": "storage",
       "tags": [

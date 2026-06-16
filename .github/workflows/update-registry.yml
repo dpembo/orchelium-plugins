@@ -2,31 +2,11 @@ name: Update Registry
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths:
-      - 'bitwarden/plugin.yaml'
-      - 'borg/plugin.yaml'
-      - 'docker/plugin.yaml'
-      - 'file-prune/plugin.yaml'
-      - 'lxc-pct/plugin.yaml'
-      - 'mount/plugin.yaml'
-      - 'mysql/plugin.yaml'
-      - 'opnsense/plugin.yaml'
-      - 'paperless-ngx/plugin.yaml'
-      - 'postgresql/plugin.yaml'
-      - 'proxmox-backup/plugin.yaml'
-      - 'rclone/plugin.yaml'
-      - 'restic/plugin.yaml'
-      - 'rsync/plugin.yaml'
-      - 's3/plugin.yaml'
-      - 'sqlite/plugin.yaml'
-      - 'systemd/plugin.yaml'
-      - 'tar/plugin.yaml'
-      - 'truenas/plugin.yaml'
-      - 'wake-on-lan/plugin.yaml'
-      - 'zfs-send-receive/plugin.yaml'
-      - 'zfs-snapshot/plugin.yaml'
+      - '**/plugin.yaml'
+      - 'scripts/**'
+      - '.github/workflows/update-registry.yml'
 
 jobs:
   update-registry:
@@ -38,16 +18,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+      - name: Install Python + PyYAML
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install pyyaml
 
       - name: Generate registry.json
         run: python3 scripts/generate-registry.py
 
-      - name: Check if registry.json changed
-        id: registry_changed
+      - name: Detect changes
+        id: diff
         run: |
           if git diff --quiet registry.json; then
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -55,8 +35,8 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push registry.json
-        if: steps.registry_changed.outputs.changed == 'true'
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

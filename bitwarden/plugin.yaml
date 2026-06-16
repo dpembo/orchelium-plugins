@@ -8,6 +8,9 @@ description: |
   and encrypted before being written to the agent host.
 
   Requires the Bitwarden CLI (bw) to be installed on the agent.
+source: official
+maintainer: "Orchelium Core Team"
+repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: tools
 tags: [bitwarden, password-manager, export, security]
 

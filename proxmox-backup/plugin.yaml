@@ -6,7 +6,7 @@ description: |
   The Orchelium agent must be running on (or have SSH access configured as)
   the Proxmox node. Supports all vzdump modes and storage targets.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: backup
 tags: [proxmox, backup, virtualization, vm, lxc]

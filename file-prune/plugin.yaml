@@ -7,7 +7,7 @@ description: |
   files. Useful for pruning backup archives, log files, and any other
   time-based file retention policies.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: system
 tags: [prune, cleanup, files, retention, maintenance]

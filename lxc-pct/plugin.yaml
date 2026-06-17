@@ -7,7 +7,7 @@ description: |
   containers. Supports start, stop, restart, exec, status, snapshot,
   rollback, destroy-snapshot, clone, and list operations.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: containers
 tags: [lxc, proxmox, containers, virtualisation]

@@ -7,7 +7,7 @@ description: |
   targets via SSH, raw encrypted streams, and resume tokens for interrupted
   transfers.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: storage
 tags: [zfs, replication, backup, ssh]

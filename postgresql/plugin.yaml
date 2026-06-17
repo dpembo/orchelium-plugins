@@ -8,7 +8,7 @@ description: |
   Passwords are managed via a PGPASSFILE (.pgpass) so they never appear
   on the command line.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: databases
 tags: [postgresql, postgres, backup, database]

@@ -6,7 +6,7 @@ description: |
   Supports recursive operations, incremental sends, and remote replication
   via SSH piped zfs receive.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: storage
 tags: [zfs, snapshots, backup, storage]

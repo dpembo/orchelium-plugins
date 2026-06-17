@@ -7,7 +7,7 @@ description: |
   B2, Azure, GCS, and many more. Remotes must be pre-configured in the
   rclone config file on the agent.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: storage
 tags: [rclone, cloud, sync, s3, sftp]

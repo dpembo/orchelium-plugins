@@ -19,7 +19,7 @@
       "official": true,
       "path": "bitwarden",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -38,7 +38,7 @@
       "official": true,
       "path": "borg",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -56,7 +56,7 @@
       "official": true,
       "path": "docker",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -76,7 +76,7 @@
       "official": true,
       "path": "file-prune",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -95,7 +95,7 @@
       "official": true,
       "path": "lxc-pct",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -115,7 +115,7 @@
       "official": true,
       "path": "mount",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -134,7 +134,7 @@
       "official": true,
       "path": "mysql",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -153,7 +153,7 @@
       "official": true,
       "path": "opnsense",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -172,7 +172,7 @@
       "official": true,
       "path": "paperless-ngx",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -191,7 +191,7 @@
       "official": true,
       "path": "postgresql",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -211,7 +211,7 @@
       "official": true,
       "path": "proxmox-backup",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -231,7 +231,7 @@
       "official": true,
       "path": "rclone",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -250,7 +250,7 @@
       "official": true,
       "path": "restic",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -270,7 +270,7 @@
       "official": true,
       "path": "rsync",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -290,7 +290,7 @@
       "official": true,
       "path": "s3",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -309,7 +309,7 @@
       "official": true,
       "path": "sqlite",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -328,7 +328,7 @@
       "official": true,
       "path": "systemd",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -347,7 +347,7 @@
       "official": true,
       "path": "tar",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -367,7 +367,7 @@
       "official": true,
       "path": "truenas",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -386,7 +386,7 @@
       "official": true,
       "path": "wake-on-lan",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -405,7 +405,7 @@
       "official": true,
       "path": "zfs-send-receive",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     },
     {
@@ -424,7 +424,7 @@
       "official": true,
       "path": "zfs-snapshot",
       "minOrcheliumVersion": "1.0.0",
-      "maintainer": "Orchelium Core Team",
+      "maintainer": "Orchelium",
       "repository_url": "https://github.com/dpembo/orchelium-plugins"
     }
   ]

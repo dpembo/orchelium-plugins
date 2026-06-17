@@ -6,7 +6,7 @@ description: |
   restart, exec, run, pull, rm, logs, ps, inspect, and prune. The Orchelium
   agent must have access to the Docker socket on the target host.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: containers
 tags: [docker, containers, devops]

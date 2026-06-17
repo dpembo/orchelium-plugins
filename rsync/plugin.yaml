@@ -5,7 +5,7 @@ description: |
   Synchronise or verify files between directories or hosts using rsync.
   Supports local-to-local, local-to-remote (SSH), and remote-to-local transfers.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: backup
 tags: [rsync, sync, file-transfer, backup, ssh]

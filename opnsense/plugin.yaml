@@ -6,7 +6,7 @@ description: |
   Access backups, firmware status, firewall rules/aliases/NAT, and system diagnostics.
   Uses OPNsense REST API with API key authentication.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: network
 tags: [opnsense, firewall, network, security]

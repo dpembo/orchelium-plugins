@@ -10,7 +10,7 @@ description: |
 
   Authentication uses a TrueNAS API key stored in a file on the agent.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: storage
 tags: [truenas, zfs, nas, storage, backup]

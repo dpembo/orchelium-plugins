@@ -1,17 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Whale body -->
-  <path d="M6 30 Q6 38 14 38 L36 38 Q44 38 44 30 L44 24 Q44 18 38 18 L10 18 Q6 18 6 24 Z"
-        fill="#D6EAF8" stroke="#1565C0" stroke-width="2" stroke-linejoin="round"/>
-  <!-- Whale spout / water -->
-  <path d="M36 18 Q38 10 34 8 Q30 6 32 12 Q28 8 30 14"
-        fill="none" stroke="#1565C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Container boxes on whale back -->
-  <rect x="10" y="21" width="7" height="6" rx="1" fill="#1565C0" opacity="0.7"/>
-  <rect x="20" y="21" width="7" height="6" rx="1" fill="#1565C0" opacity="0.7"/>
-  <rect x="30" y="21" width="7" height="6" rx="1" fill="#1565C0" opacity="0.7"/>
-  <!-- Tail -->
-  <path d="M6 30 Q2 34 4 38 Q6 42 10 38"
-        fill="#D6EAF8" stroke="#1565C0" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Container body -->
+  <rect x="4" y="14" width="40" height="20" rx="2"
+        fill="#D6EAF8" stroke="#1565C0" stroke-width="2"/>
+
+  <!-- Vertical ribs -->
+  <line x1="10" y1="14" x2="10" y2="34" stroke="#1565C0" stroke-width="2" opacity="0.7"/>
+  <line x1="16" y1="14" x2="16" y2="34" stroke="#1565C0" stroke-width="2" opacity="0.7"/>
+  <line x1="22" y1="14" x2="22" y2="34" stroke="#1565C0" stroke-width="2" opacity="0.7"/>
+  <line x1="28" y1="14" x2="28" y2="34" stroke="#1565C0" stroke-width="2" opacity="0.7"/>
+  <line x1="34" y1="14" x2="34" y2="34" stroke="#1565C0" stroke-width="2" opacity="0.7"/>
+
+  <!-- Corner castings -->
+  <rect x="4" y="12" width="4" height="4" fill="#1565C0"/>
+  <rect x="40" y="12" width="4" height="4" fill="#1565C0"/>
+  <rect x="4" y="32" width="4" height="4" fill="#1565C0"/>
+  <rect x="40" y="32" width="4" height="4" fill="#1565C0"/>
+
   <!-- Label -->
-  <text x="24" y="47" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#1565C0">docker</text>
+  <text x="24" y="46" text-anchor="middle"
+        font-family="monospace" font-size="9" font-weight="bold"
+        fill="#1565C0">docker</text>
 </svg>

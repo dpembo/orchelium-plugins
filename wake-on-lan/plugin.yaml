@@ -6,7 +6,7 @@ description: |
   machine on the local network. Uses Python 3 to craft and broadcast the
   magic packet via UDP — no external tools required.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: network
 tags: [wake-on-lan, wol, network, power-management]

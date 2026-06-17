@@ -11,7 +11,7 @@ description: |
   Credentials are read from a standard AWS credentials file or the agent's
   environment variables — never passed on the command line.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: storage
 tags: [s3, aws, object-storage, minio, cloud]

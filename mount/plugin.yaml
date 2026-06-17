@@ -6,7 +6,7 @@ description: |
   block devices, LUKS encrypted volumes, loop files, bind mounts, and tmpfs.
   Can also check whether a path is currently mounted.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: storage
 tags: [mount, nfs, smb, luks, filesystem]

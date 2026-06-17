@@ -7,7 +7,7 @@ description: |
   Supports online hot-backup (.backup command), SQL dump/restore, queries,
   VACUUM, integrity checks, and table listing.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: databases
 tags: [sqlite, database, backup, sql]

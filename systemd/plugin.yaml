@@ -6,7 +6,7 @@ description: |
   enable, disable, or query the status of any systemd unit. Supports both
   system-wide units and per-user units via the --user flag.
 source: official
-maintainer: "Orchelium Core Team"
+maintainer: "Orchelium"
 repository_url: "https://github.com/dpembo/orchelium-plugins"
 category: system
 tags: [systemd, services, linux, system-management]

@@ -1,0 +1,95 @@
+name: Deploy Plugins
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-plugins:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout with full history so we can diff ──────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      # ── Determine which plugin folders changed ─────────────────────────────
+      - name: Detect changed plugins
+        id: changed
+        run: |
+          # Get the list of top-level directories that changed between
+          # the last two commits. On workflow_dispatch, build everything.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CHANGED=$(find . -maxdepth 1 -mindepth 1 -type d \
+              ! -name '.git' ! -name '.github' \
+              -printf '%f\n')
+            echo "Rebuilding all plugins (manual trigger)"
+          else
+            CHANGED=$(git diff --name-only HEAD~1 HEAD \
+              | grep '/' \
+              | cut -d/ -f1 \
+              | sort -u \
+              | grep -v '^\.' \
+              | xargs -I{} sh -c '[ -d "{}" ] && echo "{}"' \
+              || true)
+          fi
+
+          if [ -z "$CHANGED" ]; then
+            echo "No plugin folders changed — nothing to deploy"
+            echo "plugins=" >> "$GITHUB_OUTPUT"
+          else
+            echo "Plugins to build: $CHANGED"
+            # Newline-delimited → space-delimited for the matrix
+            PLUGINS_JSON=$(echo "$CHANGED" | jq -Rsc 'split("\n") | map(select(length > 0))')
+            echo "plugins=$PLUGINS_JSON" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── Zip each changed plugin ────────────────────────────────────────────
+      - name: Zip changed plugins
+        if: steps.changed.outputs.plugins != '' && steps.changed.outputs.plugins != '[]'
+        run: |
+          mkdir -p dist
+
+          for PLUGIN in $(echo '${{ steps.changed.outputs.plugins }}' | jq -r '.[]'); do
+            if [ ! -d "$PLUGIN" ]; then
+              echo "Skipping $PLUGIN — directory not found"
+              continue
+            fi
+
+            echo "Zipping $PLUGIN…"
+
+            # Zip with the plugin folder as the root inside the archive,
+            # matching the community plugin format the hub expects
+            zip -r "dist/${PLUGIN}.zip" "$PLUGIN/"
+
+            echo "  → dist/${PLUGIN}.zip ($(du -sh "dist/${PLUGIN}.zip" | cut -f1))"
+          done
+
+          echo "Built zips:"
+          ls -lh dist/
+
+      # ── Deploy via SCP ─────────────────────────────────────────────────────
+      - name: Upload via SCP
+        if: steps.changed.outputs.plugins != '' && steps.changed.outputs.plugins != '[]'
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_KEY }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q sshpass
+
+          sshpass -p "${SSH_PASS}" scp \
+            -P "${SSH_PORT:-22}" \
+            -o StrictHostKeyChecking=no \
+            dist/*.zip \
+            "${SSH_USER}@${SSH_HOST}:/orchelium.com_new/cache/community/"
+
+          echo "Deploy complete"

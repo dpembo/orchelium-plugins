@@ -90,6 +90,6 @@ jobs:
             -P "${SSH_PORT:-22}" \
             -o StrictHostKeyChecking=no \
             dist/*.zip \
-            "${SSH_USER}@${SSH_HOST}:/orchelium.com_new/cache/community/"
+            "${SSH_USER}@${SSH_HOST}:/orchelium.com_202606/plugins/registry/installs/"
 
           echo "Deploy complete"
